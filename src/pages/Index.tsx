@@ -1,10 +1,10 @@
-import { useState, useEffect, useCallback } from "react";
 import { Heart, CalendarHeart, Sparkles, LogOut, Trash2, AlertTriangle } from "lucide-react";
 import Mascot, { getRandomTip } from "@/components/Mascot";
 import FloatingHearts from "@/components/FloatingHearts";
 import EmojiPop from "@/components/EmojiPop";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRecurringEvents } from "@/hooks/use-recurring-events";
+import { supabase } from "@/lib/supabase";
 
 const moodOptions = [
   { emoji: "🥰", label: "In Love", color: "bg-rose" },
@@ -47,13 +47,12 @@ export default function Dashboard() {
   const handleDeleteAccount = async () => {
     setIsDeleting(true);
     try {
-      const res = await fetch('http://localhost:5001/api/auth/account', {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.ok) {
-        logout();
+      if (user) {
+        await supabase.from('Event').delete().eq('userId', user.id);
+        // Supabase client can't securely delete the auth user without an RPC or Edge function,
+        // so for now we delete all their user data and log them out fully.
       }
+      logout();
     } catch {
       // silently fail
     } finally {
