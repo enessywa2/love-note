@@ -102,7 +102,7 @@ export default function Dashboard() {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h1 className="text-2xl font-extrabold text-foreground leading-tight">
-              Hey, {user?.name || getGenderNickname(user?.gender)} <span className="inline-block animate-wiggle">💕</span>
+              Hey, {user?.user_metadata?.name || getGenderNickname(user?.user_metadata?.gender)} <span className="inline-block animate-wiggle">💕</span>
             </h1>
             <p className="text-muted-foreground text-sm mt-1 animate-fade-up" style={{ animationDelay: "400ms" }}>
               How's your heart today?

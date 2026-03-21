@@ -4,7 +4,7 @@ import { Heart, Mail, Lock, ArrowRight, Loader2, User, ChevronRight } from "luci
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 
 const genderOptions = [
@@ -21,7 +21,6 @@ export default function SignupPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleNext = (e: React.FormEvent) => {
@@ -41,27 +40,21 @@ export default function SignupPage() {
     }
     setIsLoading(true);
 
-    try {
-      const response = await fetch("http://localhost:5001/api/auth/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, name, gender }),
-      });
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { name, gender },
+      },
+    });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        login(data.token, data.user);
-        toast.success(`Welcome, ${name}! Your love story begins ✨`);
-        navigate("/");
-      } else {
-        toast.error(data.error || "Signup failed");
-      }
-    } catch (err) {
-      toast.error("Could not connect to server");
-    } finally {
-      setIsLoading(false);
+    if (error) {
+      toast.error(error.message || "Signup failed");
+    } else {
+      toast.success(`Welcome, ${name}! Your love story begins ✨`);
+      navigate("/");
     }
+    setIsLoading(false);
   };
 
   return (
@@ -77,7 +70,6 @@ export default function SignupPage() {
           <p className="text-muted-foreground mt-2">
             {step === 1 ? "Tell us a little about yourself" : "Set up your secure account"}
           </p>
-          {/* Step Indicator */}
           <div className="flex items-center justify-center gap-2 mt-4">
             <div className={`h-2 w-10 rounded-full transition-all duration-300 ${step >= 1 ? "bg-primary" : "bg-muted"}`} />
             <div className={`h-2 w-10 rounded-full transition-all duration-300 ${step >= 2 ? "bg-primary" : "bg-muted"}`} />
@@ -87,38 +79,20 @@ export default function SignupPage() {
         <div className="glass-card p-8 rounded-[2rem] shadow-2xl border border-white/20 backdrop-blur-xl">
           {step === 1 ? (
             <form onSubmit={handleNext} className="space-y-6">
-              {/* Name */}
               <div className="space-y-2">
                 <Label htmlFor="name">What's your name?</Label>
                 <div className="relative">
                   <User className="absolute left-3 top-3 text-muted-foreground" size={18} />
-                  <Input
-                    id="name"
-                    type="text"
-                    placeholder="Your first name"
-                    className="pl-10 rounded-xl bg-white/50 dark:bg-slate-900/50 border-white/20 h-12"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                  />
+                  <Input id="name" type="text" placeholder="Your first name" className="pl-10 rounded-xl bg-white/50 dark:bg-slate-900/50 border-white/20 h-12" value={name} onChange={(e) => setName(e.target.value)} required />
                 </div>
               </div>
 
-              {/* Gender */}
               <div className="space-y-3">
                 <Label>How do you identify?</Label>
                 <div className="grid grid-cols-3 gap-3">
                   {genderOptions.map((opt) => (
-                    <button
-                      key={opt.value}
-                      type="button"
-                      onClick={() => setGender(opt.value)}
-                      className={`flex flex-col items-center gap-1 p-3 rounded-2xl border-2 transition-all duration-200 active:scale-95 ${
-                        gender === opt.value
-                          ? "border-primary bg-primary/10 shadow-soft"
-                          : "border-border/30 bg-card hover:border-primary/30"
-                      }`}
-                    >
+                    <button key={opt.value} type="button" onClick={() => setGender(opt.value)}
+                      className={`flex flex-col items-center gap-1 p-3 rounded-2xl border-2 transition-all duration-200 active:scale-95 ${gender === opt.value ? "border-primary bg-primary/10 shadow-soft" : "border-border/30 bg-card hover:border-primary/30"}`}>
                       <span className="text-2xl">{opt.emoji}</span>
                       <span className="text-xs font-bold text-foreground">{opt.label}</span>
                       <span className="text-[10px] text-muted-foreground">{opt.desc}</span>
@@ -159,10 +133,8 @@ export default function SignupPage() {
               </div>
 
               <div className="flex gap-3">
-                <Button type="button" variant="outline" className="flex-1 h-12 rounded-xl" onClick={() => setStep(1)}>
-                  Back
-                </Button>
-                <Button type="submit" className="flex-2 h-12 rounded-xl font-bold text-lg shadow-glow flex-1" disabled={isLoading}>
+                <Button type="button" variant="outline" className="flex-1 h-12 rounded-xl" onClick={() => setStep(1)}>Back</Button>
+                <Button type="submit" className="flex-1 h-12 rounded-xl font-bold text-lg shadow-glow" disabled={isLoading}>
                   {isLoading ? <Loader2 className="animate-spin" /> : <><ArrowRight className="mr-2" size={18} /> Create</>}
                 </Button>
               </div>
