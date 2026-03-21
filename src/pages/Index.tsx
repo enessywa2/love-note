@@ -1,12 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
-import { Heart, CalendarHeart, Sparkles } from "lucide-react";
-import { APP_CONFIG } from "@/data/constants";
+import { Heart, CalendarHeart, Sparkles, LogOut, Trash2, AlertTriangle } from "lucide-react";
 import Mascot, { getRandomTip } from "@/components/Mascot";
 import FloatingHearts from "@/components/FloatingHearts";
 import EmojiPop from "@/components/EmojiPop";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRecurringEvents } from "@/hooks/use-recurring-events";
-import { LogOut } from "lucide-react";
 
 const moodOptions = [
   { emoji: "🥰", label: "In Love", color: "bg-rose" },
@@ -29,14 +27,39 @@ function getNextOccurrence(month: number, day: number) {
   return { date: target, days: diff };
 }
 
+function getGenderNickname(gender?: string | null) {
+  if (gender === 'female') return 'lover girl';
+  if (gender === 'other') return 'my love';
+  return 'lover boy';
+}
+
 export default function Dashboard() {
   const [mood, setMood] = useState<string | null>(null);
   const [tip, setTip] = useState(getRandomTip);
   const [visibleSections, setVisibleSections] = useState(0);
   const [popEmoji, setPopEmoji] = useState<{ emoji: string; id: number } | null>(null);
   const [showHearts, setShowHearts] = useState(false);
-  const { logout } = useAuth();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const { logout, user, token } = useAuth();
   const { events } = useRecurringEvents();
+
+  const handleDeleteAccount = async () => {
+    setIsDeleting(true);
+    try {
+      const res = await fetch('http://localhost:5001/api/auth/account', {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        logout();
+      }
+    } catch {
+      // silently fail
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   useEffect(() => {
     const stored = localStorage.getItem("loveapp-mood");
@@ -79,13 +102,20 @@ export default function Dashboard() {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h1 className="text-2xl font-extrabold text-foreground leading-tight">
-              Hey, {APP_CONFIG.userName} <span className="inline-block animate-wiggle">💕</span>
+              Hey, {user?.name || getGenderNickname(user?.gender)} <span className="inline-block animate-wiggle">💕</span>
             </h1>
             <p className="text-muted-foreground text-sm mt-1 animate-fade-up" style={{ animationDelay: "400ms" }}>
               How's your heart today?
             </p>
           </div>
           <div className="flex items-center gap-3">
+            <button
+              onClick={() => setShowDeleteModal(true)}
+              className="p-2 rounded-xl bg-card border border-border/50 text-muted-foreground hover:text-rose-500 transition-all active:scale-90"
+              title="Delete Account"
+            >
+              <Trash2 size={18} />
+            </button>
             <button 
               onClick={logout}
               className="p-2 rounded-xl bg-card border border-border/50 text-muted-foreground hover:text-destructive transition-all active:scale-90"
@@ -197,6 +227,38 @@ export default function Dashboard() {
           Made with ❤️ by <span className="text-primary/50">Murashi Creatives</span>
         </p>
       </div>
+
+      {/* Delete Account Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="glass-card rounded-[2rem] p-8 max-w-sm w-full mx-4 animate-fade-up shadow-2xl border border-white/20">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-full bg-rose-100 dark:bg-rose-900/30 flex items-center justify-center">
+                <AlertTriangle size={20} className="text-rose-500" />
+              </div>
+              <h2 className="text-lg font-extrabold text-foreground">Delete Account</h2>
+            </div>
+            <p className="text-muted-foreground text-sm mb-6">
+              This will permanently delete your account and all your love notes and special dates. This cannot be undone. 💔
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                className="flex-1 py-3 rounded-xl border border-border/50 text-sm font-semibold hover:bg-muted transition-all"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteAccount}
+                disabled={isDeleting}
+                className="flex-1 py-3 rounded-xl bg-rose-500 text-white text-sm font-semibold hover:bg-rose-600 transition-all disabled:opacity-50"
+              >
+                {isDeleting ? 'Deleting...' : 'Yes, Delete'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
