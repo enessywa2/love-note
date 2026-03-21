@@ -1,3 +1,4 @@
+import { useState, useEffect, useCallback } from "react";
 import { Heart, CalendarHeart, Sparkles, LogOut, Trash2, AlertTriangle } from "lucide-react";
 import Mascot, { getRandomTip } from "@/components/Mascot";
 import FloatingHearts from "@/components/FloatingHearts";
