@@ -189,6 +189,8 @@ export default function Dashboard() {
             onChange={(e) => localStorage.setItem("loveapp-quicknote", e.target.value)}
           />
         </div>
+      </div>
+
       {/* Credits */}
       <div className="mt-12 mb-20 text-center animate-fade-in" style={{ animationDelay: "800ms" }}>
         <p className="text-[10px] font-medium text-muted-foreground/40 tracking-widest uppercase">
