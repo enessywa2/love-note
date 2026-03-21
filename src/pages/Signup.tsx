@@ -10,7 +10,6 @@ import { toast } from "sonner";
 const genderOptions = [
   { value: "male", emoji: "👨", label: "He / Him", desc: "lover boy vibes" },
   { value: "female", emoji: "👩", label: "She / Her", desc: "lover girl vibes" },
-  { value: "other", emoji: "🌈", label: "They / Them", desc: "lover vibes" },
 ];
 
 export default function SignupPage() {
@@ -89,7 +88,7 @@ export default function SignupPage() {
 
               <div className="space-y-3">
                 <Label>How do you identify?</Label>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-2 gap-3">
                   {genderOptions.map((opt) => (
                     <button key={opt.value} type="button" onClick={() => setGender(opt.value)}
                       className={`flex flex-col items-center gap-1 p-3 rounded-2xl border-2 transition-all duration-200 active:scale-95 ${gender === opt.value ? "border-primary bg-primary/10 shadow-soft" : "border-border/30 bg-card hover:border-primary/30"}`}>

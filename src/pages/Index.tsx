@@ -29,7 +29,6 @@ function getNextOccurrence(month: number, day: number) {
 
 function getGenderNickname(gender?: string | null) {
   if (gender === 'female') return 'lover girl';
-  if (gender === 'other') return 'my love';
   return 'lover boy';
 }
 
