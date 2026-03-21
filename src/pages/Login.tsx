@@ -110,6 +110,9 @@ export default function LoginPage() {
                 Sign up for free
               </Link>
             </p>
+            <p className="mt-8 text-center text-[10px] font-medium text-muted-foreground/40 tracking-widest uppercase">
+              Designed & Developed by <span className="text-primary/50">Murashi Creatives</span>
+            </p>
           </div>
         </div>
       </div>
