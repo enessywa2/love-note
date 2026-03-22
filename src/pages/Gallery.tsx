@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ImagePlus, Trash2, Loader2, Sparkles, Heart } from "lucide-react";
+import { ImagePlus, Trash2, Loader2, Sparkles, Heart, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
@@ -165,17 +165,44 @@ export default function Gallery() {
 
       {/* Fullscreen Photo Viewer */}
       <Dialog open={!!selectedPhoto} onOpenChange={(open) => !open && setSelectedPhoto(null)}>
-        <DialogContent className="max-w-[95vw] max-h-[95vh] p-0 overflow-hidden border-none bg-transparent shadow-none flex items-center justify-center">
+        <DialogContent className="max-w-[100vw] max-h-[100vh] p-0 overflow-hidden border-none bg-black/90 shadow-none flex items-center justify-center">
           {selectedPhoto && (
-            <div className="relative w-full h-full flex items-center justify-center animate-scale-in">
+            <div className="relative w-full h-full flex items-center justify-center animate-scale-in group/viewer">
+              {/* Navigation Arrows */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const currentIndex = photos.findIndex(p => p.id === selectedPhoto.id);
+                  const prevIndex = (currentIndex - 1 + photos.length) % photos.length;
+                  setSelectedPhoto(photos[prevIndex]);
+                }}
+                className="absolute left-4 top-1/2 -translate-y-1/2 z-50 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-md transition-all active:scale-95 opacity-0 group-hover/viewer:opacity-100"
+              >
+                <ChevronLeft size={32} />
+              </button>
+
               <img
                 src={selectedPhoto.imageBase64}
                 alt="Memory Fullscreen"
-                className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl"
+                className="max-w-full max-h-[90vh] object-contain cursor-zoom-out select-none"
+                onClick={() => setSelectedPhoto(null)}
               />
+
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const currentIndex = photos.findIndex(p => p.id === selectedPhoto.id);
+                  const nextIndex = (currentIndex + 1) % photos.length;
+                  setSelectedPhoto(photos[nextIndex]);
+                }}
+                className="absolute right-4 top-1/2 -translate-y-1/2 z-50 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-md transition-all active:scale-95 opacity-0 group-hover/viewer:opacity-100"
+              >
+                <ChevronRight size={32} />
+              </button>
+
               <button
                 onClick={() => setSelectedPhoto(null)}
-                className="absolute -top-12 right-0 text-white hover:text-primary transition-colors p-2"
+                className="absolute top-6 right-6 text-white hover:text-primary transition-colors p-2 z-50"
               >
                 <X size={32} />
               </button>
