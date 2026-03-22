@@ -1,11 +1,13 @@
 import { useState, useEffect, useCallback } from "react";
-import { Heart, CalendarHeart, Sparkles, LogOut, Trash2, AlertTriangle } from "lucide-react";
+import { Heart, CalendarHeart, Sparkles, LogOut, Trash2, AlertTriangle, Bell } from "lucide-react";
 import Mascot, { getRandomTip } from "@/components/Mascot";
 import FloatingHearts from "@/components/FloatingHearts";
 import EmojiPop from "@/components/EmojiPop";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRecurringEvents } from "@/hooks/use-recurring-events";
 import { supabase } from "@/lib/supabase";
+import { registerPushSubscription } from "@/lib/push";
+import { toast } from "sonner";
 
 const moodOptions = [
   { emoji: "🥰", label: "In Love", color: "bg-rose" },
@@ -67,7 +69,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     const timers = [0, 1, 2, 3].map((i) =>
-      setTimeout(() => setVisibleSections((s) => Math.max(s, i + 1)), i * 200)
+      setTimeout(() => setVisibleSections((s) => Math.max(s, i + 1)), i * 350)
     );
     return () => timers.forEach(clearTimeout);
   }, []);
@@ -108,6 +110,18 @@ export default function Dashboard() {
             </p>
           </div>
           <div className="flex items-center gap-3">
+            <button
+              onClick={async () => {
+                if (user) {
+                  await registerPushSubscription(user.id);
+                  toast.success("Notifications enabled! You'll get random sweet ideas. 🔔");
+                }
+              }}
+              className="p-2 rounded-xl bg-card border border-border/50 text-muted-foreground hover:text-primary transition-all active:scale-90"
+              title="Enable Notifications"
+            >
+              <Bell size={18} />
+            </button>
             <button
               onClick={() => setShowDeleteModal(true)}
               className="p-2 rounded-xl bg-card border border-border/50 text-muted-foreground hover:text-rose-500 transition-all active:scale-90"
