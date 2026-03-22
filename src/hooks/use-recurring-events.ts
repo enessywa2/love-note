@@ -44,14 +44,18 @@ export function useEvents() {
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error("Supabase error adding event:", error);
+        throw error;
+      }
+      
       if (data) {
         setEvents([...events, data as unknown as LoveEvent]);
         toast.success("Event added! ✨");
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to add event:", err);
-      toast.error("Failed to save event");
+      toast.error(`Failed to save event: ${err.message || 'Unknown error'}`);
     }
   };
 

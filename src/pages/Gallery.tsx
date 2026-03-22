@@ -4,6 +4,8 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { compressImage } from "@/lib/image-utils";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { X } from "lucide-react";
 
 interface Photo {
   id: string;
@@ -16,6 +18,7 @@ export default function Gallery() {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
+  const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -131,8 +134,9 @@ export default function Gallery() {
             return (
               <div
                 key={photo.id}
-                className={`relative break-inside-avoid animate-scale-in group`}
+                className={`relative break-inside-avoid animate-scale-in group cursor-zoom-in`}
                 style={{ animationDelay: `${(i % 10) * 100}ms` }}
+                onClick={() => setSelectedPhoto(photo)}
               >
                 {/* Cute Polaroid Wrapper */}
                 <div className={`bg-white dark:bg-slate-800 p-2.5 pb-10 sm:p-3 sm:pb-12 rounded-lg shadow-soft-lg border border-border/10 transition-transform duration-500 hover:scale-105 ${rotation} hover:rotate-0 hover:z-10 relative overflow-hidden backdrop-blur-sm`}>
@@ -158,6 +162,27 @@ export default function Gallery() {
           })}
         </div>
       )}
+
+      {/* Fullscreen Photo Viewer */}
+      <Dialog open={!!selectedPhoto} onOpenChange={(open) => !open && setSelectedPhoto(null)}>
+        <DialogContent className="max-w-[95vw] max-h-[95vh] p-0 overflow-hidden border-none bg-transparent shadow-none flex items-center justify-center">
+          {selectedPhoto && (
+            <div className="relative w-full h-full flex items-center justify-center animate-scale-in">
+              <img
+                src={selectedPhoto.imageBase64}
+                alt="Memory Fullscreen"
+                className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl"
+              />
+              <button
+                onClick={() => setSelectedPhoto(null)}
+                className="absolute -top-12 right-0 text-white hover:text-primary transition-colors p-2"
+              >
+                <X size={32} />
+              </button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
