@@ -5,7 +5,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { compressImage } from "@/lib/image-utils";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { X } from "lucide-react";
 
 interface Photo {
   id: string;
@@ -19,6 +18,47 @@ export default function Gallery() {
   const [isLoading, setIsLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+  // Minimum swipe distance in pixels
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe) {
+      handleNext();
+    } else if (isRightSwipe) {
+      handlePrev();
+    }
+  };
+
+  const handleNext = () => {
+    if (!selectedPhoto) return;
+    const currentIndex = photos.findIndex(p => p.id === selectedPhoto.id);
+    const nextIndex = (currentIndex + 1) % photos.length;
+    setSelectedPhoto(photos[nextIndex]);
+  };
+
+  const handlePrev = () => {
+    if (!selectedPhoto) return;
+    const currentIndex = photos.findIndex(p => p.id === selectedPhoto.id);
+    const prevIndex = (currentIndex - 1 + photos.length) % photos.length;
+    setSelectedPhoto(photos[prevIndex]);
+  };
 
   useEffect(() => {
     if (!user) return;
@@ -173,47 +213,64 @@ export default function Gallery() {
 
       {/* Fullscreen Photo Viewer */}
       <Dialog open={!!selectedPhoto} onOpenChange={(open) => !open && setSelectedPhoto(null)}>
-        <DialogContent className="max-w-[100vw] max-h-[100vh] p-0 overflow-hidden border-none bg-black/90 shadow-none flex items-center justify-center">
+        <DialogContent 
+          className="max-w-[100vw] max-h-[100vh] p-0 overflow-hidden border-none bg-black/95 shadow-none flex items-center justify-center pwa-safe-area"
+          onOpenAutoFocus={(e) => e.preventDefault()}
+        >
           {selectedPhoto && (
-            <div className="relative w-full h-full flex items-center justify-center animate-scale-in group/viewer">
-              {/* Navigation Arrows */}
+            <div 
+              className="relative w-full h-full flex items-center justify-center animate-scale-in group/viewer touch-none"
+              onTouchStart={onTouchStart}
+              onTouchMove={onTouchMove}
+              onTouchEnd={onTouchEnd}
+            >
+              {/* Navigation Arrows (Visible on hover/desktop) */}
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  const currentIndex = photos.findIndex(p => p.id === selectedPhoto.id);
-                  const prevIndex = (currentIndex - 1 + photos.length) % photos.length;
-                  setSelectedPhoto(photos[prevIndex]);
+                  handlePrev();
                 }}
-                className="absolute left-4 top-1/2 -translate-y-1/2 z-50 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-md transition-all active:scale-95 opacity-0 group-hover/viewer:opacity-100"
+                className="absolute left-4 top-1/2 -translate-y-1/2 z-50 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-md transition-all active:scale-95 opacity-0 md:group-hover/viewer:opacity-100 hidden md:flex"
               >
                 <ChevronLeft size={32} />
               </button>
 
-              <img
-                src={selectedPhoto.imageBase64}
-                alt="Memory Fullscreen"
-                className="max-w-full max-h-[90vh] object-contain cursor-zoom-out select-none"
-                onClick={() => setSelectedPhoto(null)}
-              />
+              <div className="w-full h-full flex items-center justify-center p-4">
+                <img
+                  src={selectedPhoto.imageBase64}
+                  alt="Memory Fullscreen"
+                  className="max-w-full max-h-full object-contain cursor-zoom-out select-none rounded-lg"
+                  onClick={() => setSelectedPhoto(null)}
+                  draggable={false}
+                />
+              </div>
 
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  const currentIndex = photos.findIndex(p => p.id === selectedPhoto.id);
-                  const nextIndex = (currentIndex + 1) % photos.length;
-                  setSelectedPhoto(photos[nextIndex]);
+                  handleNext();
                 }}
-                className="absolute right-4 top-1/2 -translate-y-1/2 z-50 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-md transition-all active:scale-95 opacity-0 group-hover/viewer:opacity-100"
+                className="absolute right-4 top-1/2 -translate-y-1/2 z-50 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-md transition-all active:scale-95 opacity-0 md:group-hover/viewer:opacity-100 hidden md:flex"
               >
                 <ChevronRight size={32} />
               </button>
 
               <button
                 onClick={() => setSelectedPhoto(null)}
-                className="absolute top-6 right-6 text-white hover:text-primary transition-colors p-2 z-50"
+                className="absolute top-6 right-6 text-white/70 hover:text-white transition-colors p-2 z-50 bg-black/20 rounded-full backdrop-blur-sm"
               >
-                <X size={32} />
+                <X size={28} />
               </button>
+
+              {/* Swipe Indicator for Mobile */}
+              <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-1.5 md:hidden">
+                {photos.slice(0, 5).map((_, i) => (
+                  <div 
+                    key={i} 
+                    className={`h-1.5 rounded-full transition-all ${photos.findIndex(p => p.id === selectedPhoto.id) % 5 === i ? "w-4 bg-primary" : "w-1.5 bg-white/30"}`} 
+                  />
+                ))}
+              </div>
             </div>
           )}
         </DialogContent>

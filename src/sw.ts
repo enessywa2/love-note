@@ -1,10 +1,12 @@
+/// <reference lib="webworker" />
+
 import { precacheAndRoute, cleanupOutdatedCaches } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
 import { StaleWhileRevalidate, NetworkOnly } from 'workbox-strategies';
 import { ExpirationPlugin } from 'workbox-expiration';
 import { BackgroundSyncPlugin } from 'workbox-background-sync';
 
-declare let self: ServiceWorkerGlobalScope;
+declare const self: ServiceWorkerGlobalScope;
 
 cleanupOutdatedCaches();
 precacheAndRoute(self.__WB_MANIFEST);
@@ -60,7 +62,7 @@ self.addEventListener('push', (event) => {
         data: {
           url: data.url || "/",
         }
-      })
+      } as any)
     );
   } catch (err) {
     console.error("Error parsing push event data:", err);
