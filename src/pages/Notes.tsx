@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, X, Heart } from "lucide-react";
+import { Plus, X, Heart, Edit2 } from "lucide-react";
 
 interface Note {
   id: string;
@@ -22,6 +22,7 @@ export default function Notes() {
   const [showAdd, setShowAdd] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   useEffect(() => {
     const stored = localStorage.getItem("loveapp-notes");
@@ -33,19 +34,44 @@ export default function Notes() {
     localStorage.setItem("loveapp-notes", JSON.stringify(updated));
   };
 
-  const addNote = () => {
+  const handleSaveNote = () => {
     if (!title.trim() && !content.trim()) return;
-    const newNote: Note = {
-      id: Date.now().toString(),
-      title: title.trim() || "Untitled 💕",
-      content: content.trim(),
-      color: cardColors[Math.floor(Math.random() * cardColors.length)],
-      createdAt: new Date().toISOString(),
-    };
-    saveNotes([newNote, ...notes]);
+    
+    if (editingId) {
+      const updatedNotes = notes.map(n => 
+        n.id === editingId ? { ...n, title: title.trim() || "Untitled 💕", content: content.trim() } : n
+      );
+      saveNotes(updatedNotes);
+    } else {
+      const newNote: Note = {
+        id: Date.now().toString(),
+        title: title.trim() || "Untitled 💕",
+        content: content.trim(),
+        color: cardColors[Math.floor(Math.random() * cardColors.length)],
+        createdAt: new Date().toISOString(),
+      };
+      saveNotes([newNote, ...notes]);
+    }
+    
     setTitle("");
     setContent("");
+    setEditingId(null);
     setShowAdd(false);
+  };
+
+  const handleEdit = (note: Note) => {
+    setEditingId(note.id);
+    setTitle(note.title);
+    setContent(note.content);
+    setShowAdd(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleCancel = () => {
+    setShowAdd(false);
+    setEditingId(null);
+    setTitle("");
+    setContent("");
   };
 
   const deleteNote = (id: string) => {
@@ -62,10 +88,19 @@ export default function Notes() {
           <p className="text-muted-foreground text-sm mt-1">Things to remember about her</p>
         </div>
         <button
-          onClick={() => setShowAdd(!showAdd)}
+          onClick={() => {
+            if (showAdd && !editingId) {
+              handleCancel();
+            } else {
+              setEditingId(null);
+              setTitle("");
+              setContent("");
+              setShowAdd(true);
+            }
+          }}
           className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-glow transition-all duration-200 active:scale-90"
         >
-          <Plus size={20} />
+          <Plus size={20} className={showAdd && !editingId ? "rotate-45 transition-transform" : "transition-transform"} />
         </button>
       </div>
 
@@ -87,13 +122,13 @@ export default function Notes() {
           />
           <div className="flex gap-2">
             <button
-              onClick={addNote}
+              onClick={handleSaveNote}
               className="flex-1 bg-primary text-primary-foreground rounded-xl py-2.5 text-sm font-bold transition-all duration-200 active:scale-95"
             >
-              Save Note 💕
+              {editingId ? "Update Note ✨" : "Save Note 💕"}
             </button>
             <button
-              onClick={() => setShowAdd(false)}
+              onClick={handleCancel}
               className="px-4 bg-muted text-muted-foreground rounded-xl py-2.5 text-sm font-bold transition-all duration-200 active:scale-95"
             >
               Cancel
@@ -112,16 +147,24 @@ export default function Notes() {
               style={{ animationDelay: `${i * 80}ms` }}
             >
               <div className="flex items-start justify-between gap-2 mb-2">
-                <h3 className="text-sm font-bold text-foreground flex-1">{note.title}</h3>
-                <button
-                  onClick={() => deleteNote(note.id)}
-                  className="p-1 rounded-lg text-foreground/30 hover:text-destructive transition-colors active:scale-90"
-                >
-                  <X size={14} />
-                </button>
+                <h3 className="text-sm font-bold text-foreground flex-1 break-words">{note.title}</h3>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => handleEdit(note)}
+                    className="p-1 rounded-lg text-foreground/40 hover:text-primary transition-colors active:scale-90"
+                  >
+                    <Edit2 size={13} />
+                  </button>
+                  <button
+                    onClick={() => deleteNote(note.id)}
+                    className="p-1 rounded-lg text-foreground/40 hover:text-destructive transition-colors active:scale-90"
+                  >
+                    <X size={14} />
+                  </button>
+                </div>
               </div>
               {note.content && (
-                <p className="text-xs text-foreground/70 leading-relaxed">{note.content}</p>
+                <p className="text-xs text-foreground/80 leading-relaxed whitespace-pre-wrap break-words">{note.content}</p>
               )}
               <p className="text-[10px] text-foreground/30 mt-3 font-medium">
                 {new Date(note.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
