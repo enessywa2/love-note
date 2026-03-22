@@ -5,5 +5,10 @@ import "./index.css";
 
 createRoot(document.getElementById("root")!).render(<App />);
 
-// Register the PWA service worker with automatic updates
-registerSW({ immediate: true });
+// Register the PWA service worker with automatic updates forcing a reload
+const updateSW = registerSW({
+  immediate: true,
+  onNeedRefresh() {
+    updateSW(true);
+  },
+});
