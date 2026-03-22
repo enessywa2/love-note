@@ -54,6 +54,12 @@ export default function Gallery() {
       const optimisticPhoto = { id: Date.now().toString(), imageBase64: compressedBase64, createdAt: new Date().toISOString() };
       setPhotos((prev) => [optimisticPhoto, ...prev]);
 
+      if (!navigator.onLine) {
+        toast.info("Offline: Photo saved locally and will sync when you're back online! ☁️", { id: "gallery-upload" });
+        setIsUploading(false);
+        return;
+      }
+
       const { data, error } = await supabase
         .from("Photo")
         .insert({
@@ -71,8 +77,10 @@ export default function Gallery() {
     } catch (err) {
       console.error(err);
       toast.error("Failed to upload photo.", { id: "gallery-upload" });
-      // Revert optimistic update
-      setPhotos((prev) => prev.filter(p => !p.id.includes(Date.now().toString().substring(0, 5))));
+      // Revert optimistic update only if it's a real error, not just offline
+      if (navigator.onLine) {
+        setPhotos((prev) => prev.filter(p => !p.id.includes(Date.now().toString().substring(0, 5))));
+      }
     } finally {
       setIsUploading(false);
     }

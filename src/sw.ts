@@ -1,9 +1,41 @@
 import { precacheAndRoute, cleanupOutdatedCaches } from 'workbox-precaching';
+import { registerRoute } from 'workbox-routing';
+import { StaleWhileRevalidate, NetworkOnly } from 'workbox-strategies';
+import { ExpirationPlugin } from 'workbox-expiration';
+import { BackgroundSyncPlugin } from 'workbox-background-sync';
 
 declare let self: ServiceWorkerGlobalScope;
 
 cleanupOutdatedCaches();
 precacheAndRoute(self.__WB_MANIFEST);
+
+// Cache Supabase API requests for offline access
+registerRoute(
+  ({ url }) => url.hostname.includes('supabase.co') && url.pathname.includes('/rest/v1/'),
+  new StaleWhileRevalidate({
+    cacheName: 'supabase-api-cache',
+    plugins: [
+      new ExpirationPlugin({
+        maxEntries: 100,
+        maxAgeSeconds: 30 * 24 * 60 * 60, // 30 days
+      }),
+    ],
+  }),
+  'GET'
+);
+
+// Background Sync for uploads
+const bgSyncPlugin = new BackgroundSyncPlugin('photo-upload-queue', {
+  maxRetentionTime: 24 * 60 // Retry for up to 24 hours
+});
+
+registerRoute(
+  ({ url }) => url.hostname.includes('supabase.co') && url.pathname.includes('/rest/v1/'),
+  new NetworkOnly({
+    plugins: [bgSyncPlugin],
+  }),
+  'POST'
+);
 
 self.addEventListener('install', () => {
   self.skipWaiting();
