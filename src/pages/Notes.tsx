@@ -1,13 +1,7 @@
-import { useState, useEffect } from "react";
-import { Plus, X, Heart, Edit2 } from "lucide-react";
-
-interface Note {
-  id: string;
-  title: string;
-  content: string;
-  color: string;
-  createdAt: string;
-}
+import { useState } from "react";
+import { Plus, X, Heart, Edit2, Loader2 } from "lucide-react";
+import { useNotes } from "@/hooks/use-notes";
+import type { Note } from "@/hooks/use-notes";
 
 const cardColors = [
   "bg-rose",
@@ -18,39 +12,23 @@ const cardColors = [
 ];
 
 export default function Notes() {
-  const [notes, setNotes] = useState<Note[]>([]);
+  const { notes, isLoading, addNote: createNote, updateNote, deleteNote } = useNotes();
   const [showAdd, setShowAdd] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  useEffect(() => {
-    const stored = localStorage.getItem("loveapp-notes");
-    if (stored) setNotes(JSON.parse(stored));
-  }, []);
-
-  const saveNotes = (updated: Note[]) => {
-    setNotes(updated);
-    localStorage.setItem("loveapp-notes", JSON.stringify(updated));
-  };
-
-  const handleSaveNote = () => {
+  const handleSaveNote = async () => {
     if (!title.trim() && !content.trim()) return;
     
     if (editingId) {
-      const updatedNotes = notes.map(n => 
-        n.id === editingId ? { ...n, title: title.trim() || "Untitled 💕", content: content.trim() } : n
-      );
-      saveNotes(updatedNotes);
+      await updateNote(editingId, { title: title.trim() || "Untitled 💕", content: content.trim() });
     } else {
-      const newNote: Note = {
-        id: Date.now().toString(),
+      await createNote({
         title: title.trim() || "Untitled 💕",
         content: content.trim(),
         color: cardColors[Math.floor(Math.random() * cardColors.length)],
-        createdAt: new Date().toISOString(),
-      };
-      saveNotes([newNote, ...notes]);
+      });
     }
     
     setTitle("");
@@ -74,9 +52,13 @@ export default function Notes() {
     setContent("");
   };
 
-  const deleteNote = (id: string) => {
-    saveNotes(notes.filter((n) => n.id !== id));
-  };
+  if (isLoading) {
+    return (
+      <div className="page-container flex items-center justify-center min-h-[50vh]">
+        <Loader2 className="animate-spin text-primary/50" size={40} />
+      </div>
+    );
+  }
 
   return (
     <div className="page-container">

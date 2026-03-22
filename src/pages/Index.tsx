@@ -7,6 +7,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useRecurringEvents } from "@/hooks/use-recurring-events";
 import { supabase } from "@/lib/supabase";
 import { registerPushSubscription } from "@/lib/push";
+import { compressImage } from "@/lib/image-utils";
 import { toast } from "sonner";
 
 const moodOptions = [
@@ -36,22 +37,46 @@ function getGenderNickname(gender?: string | null) {
 }
 
 function LoverFrame() {
-  const [imgSrc, setImgSrc] = useState<string | null>(() => localStorage.getItem("lover-pic"));
+  const { user } = useAuth();
+  const [imgSrc, setImgSrc] = useState<string | null>(null);
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    if (!user) return;
+    const fetchPhoto = async () => {
+      const { data } = await supabase
+        .from('Photo')
+        .select('imageBase64')
+        .eq('userId', user.id)
+        .eq('isProfileFrame', true)
+        .order('createdAt', { ascending: false })
+        .limit(1)
+        .single();
+        
+      if (data?.imageBase64) setImgSrc(data.imageBase64);
+    };
+    fetchPhoto();
+  }, [user]);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const result = event.target?.result as string;
-        setImgSrc(result);
-        try {
-          localStorage.setItem("lover-pic", result);
-        } catch {
-          toast.error("Image too large to save locally. Try a smaller pic! 🖼️");
-        }
-      };
-      reader.readAsDataURL(file);
+    if (file && user) {
+      try {
+        toast.loading("Saving photo... ✨", { id: "upload-frame" });
+        const compressedBase64 = await compressImage(file, 800, 0.8);
+        setImgSrc(compressedBase64);
+        
+        const { error } = await supabase.from('Photo').insert({
+          userId: user.id,
+          imageBase64: compressedBase64,
+          isProfileFrame: true
+        });
+
+        if (error) throw error;
+        toast.success("Photo saved beautifully! 💕", { id: "upload-frame" });
+      } catch (err) {
+        console.error(err);
+        toast.error("Failed to save photo safely. 🖼️", { id: "upload-frame" });
+      }
     }
   };
 

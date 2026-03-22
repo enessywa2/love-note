@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import Ideas from "./pages/Ideas";
 import Notes from "./pages/Notes";
 import CalendarPage from "./pages/Calendar";
+import Gallery from "./pages/Gallery";
 import LoginPage from "./pages/Login";
 import SignupPage from "./pages/Signup";
 import NotFound from "./pages/NotFound";
@@ -31,6 +32,7 @@ const AppContent = () => {
           <Route path="/ideas" element={<Ideas />} />
           <Route path="/notes" element={<Notes />} />
           <Route path="/calendar" element={<CalendarPage />} />
+          <Route path="/gallery" element={<Gallery />} />
         </Route>
         
         <Route path="*" element={<NotFound />} />

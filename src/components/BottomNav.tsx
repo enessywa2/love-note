@@ -1,15 +1,16 @@
 import { NavLink, useLocation } from "react-router-dom";
-import { Heart, Lightbulb, StickyNote, CalendarHeart } from "lucide-react";
-
-const navItems = [
-  { to: "/", icon: Heart, label: "Home" },
-  { to: "/ideas", icon: Lightbulb, label: "Ideas" },
-  { to: "/notes", icon: StickyNote, label: "Notes" },
-  { to: "/calendar", icon: CalendarHeart, label: "Calendar" },
-];
+import { Heart, Lightbulb, HeartHandshake, CalendarHeart, Image as ImageIcon } from "lucide-react";
 
 export default function BottomNav() {
   const location = useLocation();
+
+  const navItems = [
+    { to: "/", icon: Heart, label: "You" },
+    { to: "/ideas", icon: Lightbulb, label: "Ideas" },
+    { to: "/notes", icon: HeartHandshake, label: "Notes" },
+    { to: "/calendar", icon: CalendarHeart, label: "Dates" },
+    { to: "/gallery", icon: ImageIcon, label: "Gallery" },
+  ];
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card/90 backdrop-blur-lg border-t border-border/50 px-2 pb-[env(safe-area-inset-bottom)] animate-slide-up">

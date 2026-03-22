@@ -29,3 +29,24 @@ model PushSubscription {
 
   @@index([userId])
 }
+
+model Note {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  content   String
+  color     String
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model Photo {
+  id             String   @id @default(cuid())
+  userId         String
+  imageBase64    String // Using TEXT under the hood for unlimited length
+  isProfileFrame Boolean  @default(false)
+  createdAt      DateTime @default(now())
+
+  @@index([userId])
+}
