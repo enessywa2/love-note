@@ -31,7 +31,7 @@ model PushSubscription {
 }
 
 model Note {
-  id        String   @id @default(cuid())
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
   userId    String
   title     String
   content   String
@@ -42,7 +42,7 @@ model Note {
 }
 
 model Photo {
-  id             String   @id @default(cuid())
+  id             String   @id @default(dbgenerated("gen_random_uuid()"))
   userId         String
   imageBase64    String // Using TEXT under the hood for unlimited length
   isProfileFrame Boolean  @default(false)
