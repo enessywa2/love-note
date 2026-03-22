@@ -10,11 +10,12 @@ datasource db {
 
 // Events table - userId references Supabase auth.users (no FK to keep it simple)
 model Event {
-  id        String   @id @default(cuid())
+  id        String   @id @default(dbgenerated("gen_random_uuid()"))
   userId    String
   title     String
   month     Int
   day       Int
+  year      Int?     // Null means recurring annually. Number means one-time.
   emoji     String
   createdAt DateTime @default(now())
 }
