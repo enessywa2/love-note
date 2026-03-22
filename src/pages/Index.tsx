@@ -4,7 +4,7 @@ import Mascot, { getRandomTip } from "@/components/Mascot";
 import FloatingHearts from "@/components/FloatingHearts";
 import EmojiPop from "@/components/EmojiPop";
 import { useAuth } from "@/contexts/AuthContext";
-import { useRecurringEvents } from "@/hooks/use-recurring-events";
+import { useEvents } from "@/hooks/use-recurring-events";
 import { supabase } from "@/lib/supabase";
 import { registerPushSubscription } from "@/lib/push";
 import { compressImage } from "@/lib/image-utils";
@@ -19,17 +19,24 @@ const moodOptions = [
   { emoji: "😌", label: "Peaceful", color: "bg-cream" },
 ];
 
-function getNextOccurrence(month: number, day: number) {
-  const now = new Date();
-  const year = now.getFullYear();
-  let target = new Date(year, month - 1, day);
+function getNextOccurrence(month: number, day: number, year?: number | null) {
+  const today = new Date();
+  const currentYear = today.getFullYear();
   
-  if (target.getTime() < now.getTime() - (1000 * 60 * 60 * 24)) {
-    target = new Date(year + 1, month - 1, day);
+  if (year) {
+    const eventDate = new Date(year, month - 1, day);
+    const diffTime = eventDate.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return { date: eventDate, days: diffDays };
   }
-  
-  const diff = Math.ceil((target.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-  return { date: target, days: diff };
+
+  let eventDate = new Date(currentYear, month - 1, day);
+  if (eventDate < today && !(eventDate.getDate() === today.getDate() && eventDate.getMonth() === today.getMonth())) {
+    eventDate = new Date(currentYear + 1, month - 1, day);
+  }
+  const diffTime = eventDate.getTime() - today.getTime();
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return { date: eventDate, days: diffDays };
 }
 
 function getGenderNickname(gender?: string | null) {
@@ -144,7 +151,7 @@ export default function Dashboard() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const { logout, user, token } = useAuth();
-  const { events } = useRecurringEvents();
+  const { events } = useEvents();
 
   const handleDeleteAccount = async () => {
     setIsDeleting(true);
@@ -289,14 +296,18 @@ export default function Dashboard() {
         </h2>
         <div className="space-y-3">
           {events.length > 0 ? (
-            events.slice(0, 3).map((d, i) => {
-              const { date, days } = getNextOccurrence(d.month, d.day);
-              return (
-                <div
-                  key={d.title}
-                  className="glass-card rounded-2xl p-4 flex items-center gap-4 transition-all duration-300 hover:shadow-soft-lg hover:-translate-y-0.5 active:scale-[0.97] animate-slide-in-left"
-                  style={{ animationDelay: `${i * 120 + 400}ms` }}
-                >
+            events
+              .map(d => ({ ...d, ...getNextOccurrence(d.month, d.day, d.year) }))
+              .filter(d => d.days >= 0) // Hide past one-time events
+              .sort((a, b) => a.days - b.days)
+              .slice(0, 3)
+              .map((d, i) => {
+                return (
+                  <div
+                    key={d.id || d.title}
+                    className="glass-card rounded-2xl p-4 flex items-center gap-4 transition-all duration-300 hover:shadow-soft-lg hover:-translate-y-0.5 active:scale-[0.97] animate-slide-in-left"
+                    style={{ animationDelay: `${i * 120 + 400}ms` }}
+                  >
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-xl animate-pulse-soft">
                     {d.emoji}
                   </div>

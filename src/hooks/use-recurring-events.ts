@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { RecurringEvent, RECURRING_EVENTS } from "@/data/constants";
+import { LoveEvent, RECURRING_EVENTS } from "@/data/constants";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
 
-export function useRecurringEvents() {
-  const [events, setEvents] = useState<RecurringEvent[]>([]);
+export function useEvents() {
+  const [events, setEvents] = useState<LoveEvent[]>([]);
   const { token, user } = useAuth();
 
   useEffect(() => {
@@ -22,7 +22,7 @@ export function useRecurringEvents() {
           .eq('userId', user.id);
           
         if (error) throw error;
-        if (data) setEvents(data as unknown as RecurringEvent[]);
+        if (data) setEvents(data as unknown as LoveEvent[]);
       } catch (err) {
         console.error("Failed to fetch events", err);
       }
@@ -31,7 +31,7 @@ export function useRecurringEvents() {
     fetchEvents();
   }, [token, user]);
 
-  const addEvent = async (newEvent: RecurringEvent) => {
+  const addEvent = async (newEvent: LoveEvent) => {
     if (!token || !user) {
       setEvents([...events, newEvent]);
       return;
@@ -46,7 +46,7 @@ export function useRecurringEvents() {
 
       if (error) throw error;
       if (data) {
-        setEvents([...events, data as unknown as RecurringEvent]);
+        setEvents([...events, data as unknown as LoveEvent]);
         toast.success("Event added! ✨");
       }
     } catch (err) {
@@ -55,28 +55,21 @@ export function useRecurringEvents() {
     }
   };
 
-  const removeEvent = async (idOrTitle: string | number) => {
+  const removeEvent = async (id: string) => {
     if (!token || !user) {
-      setEvents(events.filter((e) => e.title !== idOrTitle));
+      setEvents(events.filter((e) => e.id !== id));
       return;
-    }
-
-    const eventToRemove = events.find(e => (e as any).id === idOrTitle || e.title === idOrTitle);
-
-    if (!eventToRemove || !(eventToRemove as any).id) {
-       setEvents(events.filter((e) => e.title !== idOrTitle));
-       return;
     }
 
     try {
       const { error } = await supabase
         .from('Event')
         .delete()
-        .eq('id', (eventToRemove as any).id);
+        .eq('id', id);
 
       if (error) throw error;
       
-      setEvents(events.filter((e) => (e as any).id !== (eventToRemove as any).id));
+      setEvents(events.filter((e) => e.id !== id));
       toast.success("Event removed");
     } catch (err) {
       console.error("Failed to delete event:", err);

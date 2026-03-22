@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Heart } from "lucide-react";
+import { Plus, Heart, Calendar as CalendarIcon } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -11,6 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import {
   Select,
   SelectContent,
@@ -18,19 +19,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { RecurringEvent } from "@/data/constants";
+import { LoveEvent } from "@/data/constants";
 
-interface AddRecurringEventDialogProps {
-  onAdd: (event: RecurringEvent) => void;
+interface AddEventDialogProps {
+  onAdd: (event: LoveEvent) => void;
 }
 
 const emojis = ["💍", "🎂", "💝", "✨", "🌸", "💍", "🎁", "🥂", "💏", "🌹"];
 
-export function AddRecurringEventDialog({ onAdd }: AddRecurringEventDialogProps) {
+export function AddEventDialog({ onAdd }: AddEventDialogProps) {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [month, setMonth] = useState("");
   const [day, setDay] = useState("");
+  const [year, setYear] = useState(new Date().getFullYear().toString());
+  const [isRecurring, setIsRecurring] = useState(true);
   const [emoji, setEmoji] = useState(emojis[0]);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -41,6 +44,7 @@ export function AddRecurringEventDialog({ onAdd }: AddRecurringEventDialogProps)
       title,
       month: parseInt(month),
       day: parseInt(day),
+      year: isRecurring ? null : parseInt(year),
       emoji,
     });
 
@@ -48,6 +52,8 @@ export function AddRecurringEventDialog({ onAdd }: AddRecurringEventDialogProps)
     setTitle("");
     setMonth("");
     setDay("");
+    setYear(new Date().getFullYear().toString());
+    setIsRecurring(true);
     setEmoji(emojis[0]);
     setOpen(false);
   };
@@ -78,7 +84,29 @@ export function AddRecurringEventDialog({ onAdd }: AddRecurringEventDialogProps)
               required
             />
           </div>
-          <div className="grid grid-cols-2 gap-4">
+
+          <div className="flex items-center justify-between p-3 bg-muted/50 rounded-2xl border border-border/50">
+            <div className="space-y-0.5">
+              <Label className="text-sm font-bold">Repeat Yearly</Label>
+              <p className="text-[10px] text-muted-foreground">Every year on this date</p>
+            </div>
+            <Switch checked={isRecurring} onCheckedChange={setIsRecurring} />
+          </div>
+
+          <div className={`grid ${isRecurring ? 'grid-cols-2' : 'grid-cols-3'} gap-3 transition-all duration-300`}>
+            {!isRecurring && (
+              <div className="space-y-2 animate-scale-in">
+                <Label htmlFor="year">Year</Label>
+                <Input
+                  id="year"
+                  type="number"
+                  value={year}
+                  onChange={(e) => setYear(e.target.value)}
+                  className="rounded-xl"
+                  required
+                />
+              </div>
+            )}
             <div className="space-y-2">
               <Label htmlFor="month">Month</Label>
               <Select value={month} onValueChange={setMonth} required>
@@ -88,7 +116,7 @@ export function AddRecurringEventDialog({ onAdd }: AddRecurringEventDialogProps)
                 <SelectContent>
                   {Array.from({ length: 12 }, (_, i) => (
                     <SelectItem key={i + 1} value={(i + 1).toString()}>
-                      {new Date(0, i).toLocaleString('en-US', { month: 'long' })}
+                      {new Date(0, i).toLocaleString('en-US', { month: 'short' })}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -101,7 +129,7 @@ export function AddRecurringEventDialog({ onAdd }: AddRecurringEventDialogProps)
                 type="number"
                 min="1"
                 max="31"
-                placeholder="e.g. 15"
+                placeholder="Day"
                 value={day}
                 onChange={(e) => setDay(e.target.value)}
                 className="rounded-xl"
@@ -127,8 +155,8 @@ export function AddRecurringEventDialog({ onAdd }: AddRecurringEventDialogProps)
             </div>
           </div>
           <DialogFooter className="pt-4">
-            <Button type="submit" className="w-full rounded-2xl font-bold py-6">
-              Save Special Moment
+            <Button type="submit" className="w-full rounded-2xl font-bold py-6 bg-primary shadow-glow">
+              Save Special Moment ✨
             </Button>
           </DialogFooter>
         </form>

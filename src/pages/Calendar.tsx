@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, Plus, Calendar as CalendarIcon, ChevronDown, Trash2 } from "lucide-react";
 import { APP_CONFIG } from "@/data/constants";
-import { useRecurringEvents } from "@/hooks/use-recurring-events";
-import { AddRecurringEventDialog } from "@/components/AddRecurringEventDialog";
+import { useEvents } from "@/hooks/use-recurring-events";
+import { AddEventDialog } from "@/components/AddRecurringEventDialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,7 +15,7 @@ const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 export default function CalendarPage() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const { events, addEvent, removeEvent } = useRecurringEvents();
+  const { events, addEvent, removeEvent } = useEvents();
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -39,15 +39,12 @@ export default function CalendarPage() {
     `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 
   const getEventsForDay = (day: number) => {
-    const dateStr = getDateStr(day);
     const m = month + 1;
     const d = day;
 
-    const recurring = events.filter(
-      (e) => e.month === m && e.day === d
-    ).map((e, index) => ({ ...e, id: `recurring-${e.title}-${day}-${index}`, date: dateStr }));
-
-    return recurring;
+    return events.filter(
+      (e) => e.month === m && e.day === d && (e.year === null || e.year === undefined || e.year === year)
+    );
   };
 
   const isToday = (day: number) =>
@@ -68,7 +65,7 @@ export default function CalendarPage() {
             </h1>
             <p className="text-muted-foreground text-sm mt-1">Keep track of special moments</p>
           </div>
-          <AddRecurringEventDialog onAdd={addEvent} />
+          <AddEventDialog onAdd={addEvent} />
         </div>
       </div>
 
@@ -160,7 +157,7 @@ export default function CalendarPage() {
                     <span className="text-sm font-bold text-foreground">{e.title}</span>
                   </div>
                   <button 
-                    onClick={() => removeEvent(e.title)}
+                    onClick={() => removeEvent(e.id!)}
                     className="p-2 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity"
                   >
                     <Trash2 size={16} />

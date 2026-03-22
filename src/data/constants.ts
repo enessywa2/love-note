@@ -1,7 +1,9 @@
-export interface RecurringEvent {
+export interface LoveEvent {
+  id?: string;
   title: string;
   month: number; // 1-12
   day: number;
+  year?: number | null; // Null means recurring annually
   emoji: string;
 }
 
@@ -11,9 +13,9 @@ export const APP_CONFIG = {
   romanceStartDate: "2024-04-15",
 };
 
-export const RECURRING_EVENTS: RecurringEvent[] = [
-  { title: "Anniversary 💍", month: 4, day: 15, emoji: "💍" },
-  { title: "Her Birthday 🎂", month: 6, day: 22, emoji: "🎂" },
+export const RECURRING_EVENTS: LoveEvent[] = [
+  { title: "Anniversary 💍", month: 4, day: 15, emoji: "💍", year: null },
+  { title: "Her Birthday 🎂", month: 6, day: 22, emoji: "🎂", year: null },
 ];
 
 export const STATIC_PHRASES = [
