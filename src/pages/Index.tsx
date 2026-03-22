@@ -8,6 +8,7 @@ import { useRecurringEvents } from "@/hooks/use-recurring-events";
 import { supabase } from "@/lib/supabase";
 import { registerPushSubscription } from "@/lib/push";
 import { compressImage } from "@/lib/image-utils";
+import ImageCropper from "@/components/ImageCropper";
 import { toast } from "sonner";
 
 const moodOptions = [
@@ -39,18 +40,20 @@ function getGenderNickname(gender?: string | null) {
 function LoverFrame() {
   const { user } = useAuth();
   const [imgSrc, setImgSrc] = useState<string | null>(null);
+  const [tempImage, setTempImage] = useState<string | null>(null);
+  const [isCropperOpen, setIsCropperOpen] = useState(false);
 
   useEffect(() => {
     if (!user) return;
     const fetchPhoto = async () => {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('Photo')
         .select('imageBase64')
         .eq('userId', user.id)
         .eq('isProfileFrame', true)
         .order('createdAt', { ascending: false })
         .limit(1)
-        .single();
+        .maybeSingle();
         
       if (data?.imageBase64) setImgSrc(data.imageBase64);
     };
@@ -60,23 +63,34 @@ function LoverFrame() {
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && user) {
-      try {
-        toast.loading("Saving photo... ✨", { id: "upload-frame" });
-        const compressedBase64 = await compressImage(file, 800, 0.8);
-        setImgSrc(compressedBase64);
-        
-        const { error } = await supabase.from('Photo').insert({
-          userId: user.id,
-          imageBase64: compressedBase64,
-          isProfileFrame: true
-        });
+      const reader = new FileReader();
+      reader.onload = () => {
+        setTempImage(reader.result as string);
+        setIsCropperOpen(true);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
-        if (error) throw error;
-        toast.success("Photo saved beautifully! 💕", { id: "upload-frame" });
-      } catch (err) {
-        console.error(err);
-        toast.error("Failed to save photo safely. 🖼️", { id: "upload-frame" });
-      }
+  const handleCropComplete = async (croppedImage: string) => {
+    if (!user) return;
+    setIsCropperOpen(false);
+    
+    try {
+      toast.loading("Saving your favorite photo... ✨", { id: "upload-frame" });
+      setImgSrc(croppedImage);
+      
+      const { error } = await supabase.from('Photo').insert({
+        userId: user.id,
+        imageBase64: croppedImage,
+        isProfileFrame: true
+      });
+
+      if (error) throw error;
+      toast.success("Photo saved perfectly! 💕", { id: "upload-frame" });
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to save photo. 🖼️", { id: "upload-frame" });
     }
   };
 
@@ -108,6 +122,15 @@ function LoverFrame() {
         <div className="absolute -bottom-5 -right-5 text-4xl animate-bounce-gentle" style={{ animationDelay: '1s', filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.1))' }}>✨</div>
         <div className="absolute -top-5 -left-5 text-4xl animate-wiggle" style={{ filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.1))' }}>💕</div>
       </div>
+
+      {tempImage && (
+        <ImageCropper
+          image={tempImage}
+          open={isCropperOpen}
+          onCropComplete={handleCropComplete}
+          onCancel={() => setIsCropperOpen(false)}
+        />
+      )}
     </div>
   );
 }

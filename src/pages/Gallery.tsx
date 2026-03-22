@@ -4,6 +4,7 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { compressImage } from "@/lib/image-utils";
+import ImageCropper from "@/components/ImageCropper";
 
 interface Photo {
   id: string;
@@ -16,6 +17,8 @@ export default function Gallery() {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
+  const [tempImage, setTempImage] = useState<string | null>(null);
+  const [isCropperOpen, setIsCropperOpen] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -41,21 +44,30 @@ export default function Gallery() {
     const file = e.target.files?.[0];
     if (!file || !user) return;
 
+    const reader = new FileReader();
+    reader.onload = () => {
+      setTempImage(reader.result as string);
+      setIsCropperOpen(true);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleCropComplete = async (croppedImage: string) => {
+    if (!user) return;
+    setIsCropperOpen(false);
     setIsUploading(true);
     toast.loading("Adding to gallery... ✨", { id: "gallery-upload" });
 
     try {
-      const compressedBase64 = await compressImage(file, 1000, 0.85);
-
       // Optimistic update
-      const optimisticPhoto = { id: Date.now().toString(), imageBase64: compressedBase64, createdAt: new Date().toISOString() };
+      const optimisticPhoto = { id: Date.now().toString(), imageBase64: croppedImage, createdAt: new Date().toISOString() };
       setPhotos((prev) => [optimisticPhoto, ...prev]);
 
       const { data, error } = await supabase
         .from("Photo")
         .insert({
           userId: user.id,
-          imageBase64: compressedBase64,
+          imageBase64: croppedImage,
           isProfileFrame: false,
         })
         .select()
@@ -68,8 +80,7 @@ export default function Gallery() {
     } catch (err) {
       console.error(err);
       toast.error("Failed to upload photo.", { id: "gallery-upload" });
-      // Revert optimistic update
-      setPhotos((prev) => prev.slice(1));
+      setPhotos((prev) => prev.filter(p => !p.id.includes(Date.now().toString().substring(0, 5)))); // Rough revert
     } finally {
       setIsUploading(false);
     }
@@ -157,6 +168,15 @@ export default function Gallery() {
             );
           })}
         </div>
+      )}
+
+      {tempImage && (
+        <ImageCropper
+          image={tempImage}
+          open={isCropperOpen}
+          onCropComplete={handleCropComplete}
+          onCancel={() => setIsCropperOpen(false)}
+        />
       )}
     </div>
   );
