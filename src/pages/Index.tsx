@@ -35,6 +35,58 @@ function getGenderNickname(gender?: string | null) {
   return 'lover boy';
 }
 
+function LoverFrame() {
+  const [imgSrc, setImgSrc] = useState<string | null>(() => localStorage.getItem("lover-pic"));
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const result = event.target?.result as string;
+        setImgSrc(result);
+        try {
+          localStorage.setItem("lover-pic", result);
+        } catch {
+          toast.error("Image too large to save locally. Try a smaller pic! 🖼️");
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  return (
+    <div className="flex justify-center my-10 animate-fade-up" style={{ animationDelay: "200ms" }}>
+      <div className="relative w-56 h-56 sm:w-64 sm:h-64 group">
+        {/* Cute decorative glowing borders */}
+        <div className="absolute inset-[-6px] bg-gradient-to-tr from-rose-400 via-pink-400 to-primary rounded-[2.5rem] rotate-[4deg] opacity-60 animate-pulse-soft"></div>
+        <div className="absolute inset-[-6px] bg-gradient-to-bl from-rose-300 via-pink-300 to-primary rounded-[2.5rem] -rotate-[4deg] opacity-60 shadow-glow"></div>
+        
+        {/* Frame Container */}
+        <div className="relative w-full h-full bg-card rounded-[2.5rem] overflow-hidden border-[6px] border-white/80 dark:border-slate-800 flex items-center justify-center shadow-2xl transition-transform duration-500 group-hover:scale-[1.02]">
+          {imgSrc ? (
+            <img src={imgSrc} alt="My Love" className="w-full h-full object-cover" />
+          ) : (
+            <div className="flex flex-col items-center justify-center text-muted-foreground/60 p-4 text-center">
+              <Heart size={44} className="mb-3 animate-bounce-gentle text-primary/40" />
+              <p className="text-sm font-bold opacity-70">Add a photo of<br/>your love</p>
+            </div>
+          )}
+          
+          <label className="absolute inset-0 cursor-pointer bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <span className="text-white font-bold bg-black/40 px-5 py-2.5 rounded-full backdrop-blur-md shadow-lg border border-white/20">Change Photo</span>
+            <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+          </label>
+        </div>
+
+        {/* Floating decorations */}
+        <div className="absolute -bottom-5 -right-5 text-4xl animate-bounce-gentle" style={{ animationDelay: '1s', filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.1))' }}>✨</div>
+        <div className="absolute -top-5 -left-5 text-4xl animate-wiggle" style={{ filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.1))' }}>💕</div>
+      </div>
+    </div>
+  );
+}
+
 export default function Dashboard() {
   const [mood, setMood] = useState<string | null>(null);
   const [tip, setTip] = useState(getRandomTip);
@@ -144,6 +196,9 @@ export default function Dashboard() {
 
         <Mascot message={tip} size="sm" className="mb-4" />
       </div>
+
+      {/* Stylized Lover Photo Frame */}
+      <LoverFrame />
 
       {/* Mood Selector */}
       <div
