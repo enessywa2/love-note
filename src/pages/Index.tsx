@@ -10,6 +10,7 @@ import { registerPushSubscription } from "@/lib/push";
 import { compressImage } from "@/lib/image-utils";
 import ImageCropper from "@/components/ImageCropper";
 import { toast } from "sonner";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const moodOptions = [
   { emoji: "🥰", label: "In Love", color: "bg-rose" },
@@ -229,6 +230,7 @@ export default function Dashboard() {
             >
               <Bell size={18} />
             </button>
+            <ThemeToggle />
             <button
               onClick={() => setShowDeleteModal(true)}
               className="p-2 rounded-xl bg-card border border-border/50 text-muted-foreground hover:text-rose-500 transition-all active:scale-90"
@@ -314,12 +316,12 @@ export default function Dashboard() {
                   <div className="flex-1 min-w-0">
                     <p className="font-bold text-foreground text-sm">{d.title}</p>
                     <p className="text-muted-foreground text-xs">
-                      {date.toLocaleDateString("en-US", { month: "long", day: "numeric" })}
+                      {d.date.toLocaleDateString("en-US", { month: "long", day: "numeric" })}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-lg font-extrabold text-primary tabular-nums">{days > 0 ? days : "Today!"}</p>
-                    {days > 0 && <p className="text-[10px] text-muted-foreground font-medium">days left</p>}
+                    <p className="text-lg font-extrabold text-primary tabular-nums">{d.days > 0 ? d.days : "Today!"}</p>
+                    {d.days > 0 && <p className="text-[10px] text-muted-foreground font-medium">days left</p>}
                   </div>
                 </div>
               );

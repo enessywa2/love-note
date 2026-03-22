@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -15,6 +16,16 @@ import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 const queryClient = new QueryClient();
+
+const ThemeInitializer = () => {
+  useEffect(() => {
+    const root = window.document.documentElement;
+    const stored = localStorage.getItem("theme") as "light" | "dark";
+    const theme = stored || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    root.classList.add(theme);
+  }, []);
+  return null;
+};
 
 const AppContent = () => {
   const { token } = useAuth();
@@ -46,6 +57,7 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <TooltipProvider>
+        <ThemeInitializer />
         <Sonner
           position="top-center"
           toastOptions={{
