@@ -5,6 +5,7 @@ export interface LoveEvent {
   day: number;
   year?: number | null; // Null means recurring annually
   emoji: string;
+  hasPlan?: boolean;
 }
 
 export const APP_CONFIG = {

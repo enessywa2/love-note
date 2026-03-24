@@ -6,7 +6,14 @@ const supabase = createClient(
   process.env.SUPABASE_ANON_KEY!
 );
 
-export const authenticateToken = async (req: Request & { user?: any }, res: Response, next: NextFunction) => {
+export interface AuthRequest extends Request {
+  user?: {
+    id: string;
+    email?: string;
+  };
+}
+
+export const authenticateToken = async (req: AuthRequest, res: Response, next: NextFunction) => {
   const authHeader = req.headers.authorization;
   const token = authHeader?.split(' ')[1];
 
@@ -23,3 +30,5 @@ export const authenticateToken = async (req: Request & { user?: any }, res: Resp
   req.user = { id: user.id, email: user.email };
   next();
 };
+
+export const authenticate = authenticateToken;

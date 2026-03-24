@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronLeft, ChevronRight, Plus, Calendar as CalendarIcon, ChevronDown, Trash2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus, Calendar as CalendarIcon, ChevronDown, Trash2, Heart } from "lucide-react";
 import { APP_CONFIG } from "@/data/constants";
 import { useEvents } from "@/hooks/use-recurring-events";
 import { AddEventDialog } from "@/components/AddRecurringEventDialog";
@@ -115,6 +115,7 @@ export default function CalendarPage() {
             const dateStr = getDateStr(day);
             const dayEvents = getEventsForDay(day);
             const hasEvent = dayEvents.length > 0;
+            const hasPlan = dayEvents.some(e => e.hasPlan);
             const selected = selectedDate === dateStr;
             const todayClass = isToday(day);
 
@@ -122,17 +123,26 @@ export default function CalendarPage() {
               <button
                 key={day}
                 onClick={() => setSelectedDate(selected ? null : dateStr)}
-                className={`relative aspect-square flex flex-col items-center justify-center rounded-xl text-sm font-semibold transition-all duration-200 active:scale-90 ${
+                className={`relative aspect-square flex flex-col items-center justify-center rounded-xl text-sm font-semibold transition-all duration-200 active:scale-95 ${
                   selected
-                    ? "bg-primary text-primary-foreground shadow-glow"
+                    ? "bg-primary text-primary-foreground shadow-glow scale-105 z-10"
                     : todayClass
-                    ? "bg-primary/10 text-primary"
+                    ? "bg-primary/10 text-primary border-2 border-primary/20"
+                    : hasPlan
+                    ? "bg-amber-100/50 text-amber-700 border-2 border-amber-300 animate-pulse-subtle shadow-sm"
+                    : hasEvent
+                    ? "border border-primary/30 bg-primary/[0.02] text-foreground"
                     : "text-foreground hover:bg-muted/50"
                 }`}
               >
                 {day}
                 {hasEvent && (
-                  <div className={`absolute bottom-1 w-1 h-1 rounded-full ${selected ? "bg-primary-foreground" : "bg-primary"}`} />
+                  <div className={`absolute bottom-1 w-1.5 h-1.5 rounded-full ${selected ? "bg-primary-foreground" : hasPlan ? "bg-amber-500" : "bg-primary shadow-[0_0_8px_rgba(236,112,146,0.4)]"}`} />
+                )}
+                {hasPlan && !selected && (
+                  <div className="absolute -top-1 -right-1 bg-amber-500 text-white rounded-full p-0.5 shadow-sm">
+                    <Heart size={8} fill="currentColor" />
+                  </div>
                 )}
               </button>
             );
@@ -164,10 +174,35 @@ export default function CalendarPage() {
                   </button>
                 </div>
               ))}
+              <div className="pt-2">
+                <AddEventDialog 
+                  onAdd={addEvent}
+                  defaultMonth={month + 1}
+                  defaultDay={parseInt(selectedDate.split("-")[2])}
+                  defaultYear={year}
+                  trigger={
+                    <button className="w-full py-3 rounded-2xl border-2 border-dashed border-primary/20 text-primary/60 text-xs font-bold hover:bg-primary/5 transition-all flex items-center justify-center gap-2">
+                      <Plus size={14} /> Add another event
+                    </button>
+                  }
+                />
+              </div>
             </div>
           ) : (
             <div className="glass-card rounded-2xl p-6 text-center">
-              <p className="text-muted-foreground text-sm mb-3">Nothing planned for this day yet!</p>
+              <p className="text-muted-foreground text-sm mb-4">Nothing planned for this day yet!</p>
+              <AddEventDialog 
+                onAdd={addEvent}
+                defaultMonth={month + 1}
+                defaultDay={parseInt(selectedDate.split("-")[2])}
+                defaultYear={year}
+                trigger={
+                  <button className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-full text-sm font-bold shadow-glow transition-all active:scale-95">
+                    <Plus size={16} />
+                    Plan a special moment
+                  </button>
+                }
+              />
             </div>
           )}
         </div>

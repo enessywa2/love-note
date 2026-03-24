@@ -1,6 +1,7 @@
 -- Drop any existing restrict policies
 DROP POLICY IF EXISTS "Deny all public access to Event" ON "Event";
 DROP POLICY IF EXISTS "deny_public_events" ON "Event";
+DROP POLICY IF EXISTS "Users can manage their own events" ON "Event";
 
 -- Enable RLS
 ALTER TABLE "Event" ENABLE ROW LEVEL SECURITY;

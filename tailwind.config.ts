@@ -166,7 +166,7 @@ export default {
         "emoji-burst": "emoji-burst 1s cubic-bezier(0.16, 1, 0.3, 1) forwards",
         "jelly": "jelly 0.8s cubic-bezier(0.16, 1, 0.3, 1)",
         "slide-in-left": "slide-in-left 1s cubic-bezier(0.16, 1, 0.3, 1) forwards",
-        "pulse-soft": "pulse-soft 3.5s ease-in-out infinite",
+        "pulse-subtle": "pulse-soft 2s ease-in-out infinite",
         "spin-slow": "spin-slow 12s linear infinite",
         "shimmer": "shimmer 3s linear infinite",
       },

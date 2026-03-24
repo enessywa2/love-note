@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Plus, Heart, Calendar as CalendarIcon } from "lucide-react";
 import {
   Dialog,
@@ -23,18 +23,36 @@ import { LoveEvent } from "@/data/constants";
 
 interface AddEventDialogProps {
   onAdd: (event: LoveEvent) => void;
+  defaultMonth?: number;
+  defaultDay?: number;
+  defaultYear?: number;
+  trigger?: React.ReactNode;
 }
 
 const emojis = ["💍", "🎂", "💝", "✨", "🌸", "💍", "🎁", "🥂", "💏", "🌹"];
 
-export function AddEventDialog({ onAdd }: AddEventDialogProps) {
+export function AddEventDialog({ onAdd, defaultMonth, defaultDay, defaultYear, trigger }: AddEventDialogProps) {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
-  const [month, setMonth] = useState("");
-  const [day, setDay] = useState("");
-  const [year, setYear] = useState(new Date().getFullYear().toString());
-  const [isRecurring, setIsRecurring] = useState(true);
+  const [month, setMonth] = useState(defaultMonth?.toString() || "");
+  const [day, setDay] = useState(defaultDay?.toString() || "");
+  const [year, setYear] = useState(defaultYear?.toString() || new Date().getFullYear().toString());
+  const [isRecurring, setIsRecurring] = useState(!defaultYear);
+  const [hasPlan, setHasPlan] = useState(false);
   const [emoji, setEmoji] = useState(emojis[0]);
+
+  // Update values if defaults change (e.g. when clicking different days)
+  useEffect(() => {
+    if (defaultMonth) setMonth(defaultMonth.toString());
+    if (defaultDay) setDay(defaultDay.toString());
+    if (defaultYear) {
+      setYear(defaultYear.toString());
+      setIsRecurring(false);
+    } else {
+      setIsRecurring(true);
+    }
+    setHasPlan(false);
+  }, [defaultMonth, defaultDay, defaultYear]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,14 +64,16 @@ export function AddEventDialog({ onAdd }: AddEventDialogProps) {
       day: parseInt(day),
       year: isRecurring ? null : parseInt(year),
       emoji,
+      hasPlan,
     });
 
     // Reset and close
     setTitle("");
-    setMonth("");
-    setDay("");
-    setYear(new Date().getFullYear().toString());
-    setIsRecurring(true);
+    setMonth(defaultMonth?.toString() || "");
+    setDay(defaultDay?.toString() || "");
+    setYear(defaultYear?.toString() || new Date().getFullYear().toString());
+    setIsRecurring(!defaultYear);
+    setHasPlan(false);
     setEmoji(emojis[0]);
     setOpen(false);
   };
@@ -61,10 +81,12 @@ export function AddEventDialog({ onAdd }: AddEventDialogProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <button className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-full text-xs font-bold transition-all active:scale-95">
-          <Plus size={14} />
-          Add something sweet
-        </button>
+        {trigger ? trigger : (
+          <button className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-full text-xs font-bold transition-all active:scale-95">
+            <Plus size={14} />
+            Add something sweet
+          </button>
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] rounded-3xl">
         <DialogHeader>
@@ -91,6 +113,14 @@ export function AddEventDialog({ onAdd }: AddEventDialogProps) {
               <p className="text-[10px] text-muted-foreground">Every year on this date</p>
             </div>
             <Switch checked={isRecurring} onCheckedChange={setIsRecurring} />
+          </div>
+
+          <div className="flex items-center justify-between p-3 bg-primary/5 rounded-2xl border border-primary/10">
+            <div className="space-y-0.5">
+              <Label className="text-sm font-bold text-primary">Special Plan ✨</Label>
+              <p className="text-[10px] text-primary/60">I've already got something planned!</p>
+            </div>
+            <Switch checked={hasPlan} onCheckedChange={setHasPlan} />
           </div>
 
           <div className={`grid ${isRecurring ? 'grid-cols-2' : 'grid-cols-3'} gap-3 transition-all duration-300`}>
