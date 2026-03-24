@@ -9,12 +9,15 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(dbgenerated("gen_random_uuid()"))
-  email     String   @unique
-  password  String
-  name      String?
-  gender    String   @default("male")
-  createdAt DateTime @default(now())
+  id              String   @id @default(dbgenerated("gen_random_uuid()"))
+  email           String   @unique
+  password        String
+  name            String?
+  gender          String   @default("male")
+  partnerId       String?  @unique
+  mood            String?
+  lastMoodUpdate  DateTime?
+  createdAt       DateTime @default(now())
 }
 
 // Events table - userId references Supabase auth.users (no FK to keep it simple)

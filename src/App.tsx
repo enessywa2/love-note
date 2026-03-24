@@ -13,6 +13,7 @@ import LoginPage from "./pages/Login";
 import SignupPage from "./pages/Signup";
 import NotFound from "./pages/NotFound";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { PartnerProvider } from "@/contexts/PartnerContext"; // Added PartnerProvider import
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 const queryClient = new QueryClient();
@@ -56,21 +57,23 @@ const AppContent = () => {
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
-      <TooltipProvider>
-        <ThemeInitializer />
-        <Sonner
-          position="top-center"
-          toastOptions={{
-            style: {
-              borderRadius: "1rem",
-              fontFamily: "Nunito, system-ui, sans-serif",
-            },
-          }}
-        />
-        <BrowserRouter>
-          <AppContent />
-        </BrowserRouter>
-      </TooltipProvider>
+      <PartnerProvider>
+        <TooltipProvider>
+          <ThemeInitializer />
+          <Sonner
+            position="top-center"
+            toastOptions={{
+              style: {
+                borderRadius: "1rem",
+                fontFamily: "Nunito, system-ui, sans-serif",
+              },
+            }}
+          />
+          <BrowserRouter>
+            <AppContent />
+          </BrowserRouter>
+        </TooltipProvider>
+      </PartnerProvider>
     </AuthProvider>
   </QueryClientProvider>
 );

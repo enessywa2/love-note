@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { ImagePlus, Trash2, Loader2, Sparkles, Heart, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/contexts/AuthContext";
+import { usePartner } from "@/contexts/PartnerContext";
 import { toast } from "sonner";
 import { compressImage } from "@/lib/image-utils";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
@@ -14,6 +15,7 @@ interface Photo {
 
 export default function Gallery() {
   const { user } = useAuth();
+  const { partner } = usePartner();
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
@@ -63,12 +65,19 @@ export default function Gallery() {
   useEffect(() => {
     if (!user) return;
     const fetchPhotos = async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from("Photo")
         .select("*")
-        .eq("userId", user.id)
         .eq("isProfileFrame", false)
         .order("createdAt", { ascending: false });
+
+      if (partner?.id) {
+        query = query.or(`userId.eq.${user.id},userId.eq.${partner.id}`);
+      } else {
+        query = query.eq("userId", user.id);
+      }
+
+      const { data, error } = await query;
 
       if (error) {
         toast.error("Failed to load gallery.");
@@ -78,7 +87,7 @@ export default function Gallery() {
       setIsLoading(false);
     };
     fetchPhotos();
-  }, [user]);
+  }, [user, partner]);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
