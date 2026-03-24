@@ -24,13 +24,17 @@ import { Button } from "@/components/ui/button";
 
 const moodOptions = [
   { emoji: "🥰", label: "Obsessed", color: "bg-rose" },
-  { emoji: "💅", label: "Slaying", color: "bg-peach" },
-  { emoji: "💀", label: "Dead", color: "bg-lavender" },
-  { emoji: "🫠", label: "Melting", color: "bg-baby-blue" },
-  { emoji: "🤡", label: "Clownin'", color: "bg-cream" },
-  { emoji: "😤", label: "Locked In", color: "bg-rose" },
-  { emoji: "🥺", label: "Pleading", color: "bg-peach" },
-  { emoji: "🪫", label: "Drained", color: "bg-lavender" },
+  { emoji: "😊", label: "Happy", color: "bg-peach" },
+  { emoji: "🤗", label: "Grateful", color: "bg-lavender" },
+  { emoji: "💪", label: "Strong", color: "bg-baby-blue" },
+  { emoji: "😌", label: "Peaceful", color: "bg-cream" },
+  { emoji: "💅", label: "Slaying", color: "bg-rose" },
+  { emoji: "💀", label: "Dead", color: "bg-peach" },
+  { emoji: "🫠", label: "Melting", color: "bg-lavender" },
+  { emoji: "🤡", label: "Clownin'", color: "bg-baby-blue" },
+  { emoji: "😤", label: "Locked In", color: "bg-cream" },
+  { emoji: "🥺", label: "Pleading", color: "bg-rose" },
+  { emoji: "🪫", label: "Drained", color: "bg-peach" },
 ];
 
 function getNextOccurrence(month: number, day: number, year?: number | null) {
