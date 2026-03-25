@@ -1,317 +1,71 @@
 [
-  {
-    "id": "morning-1",
-    "category": "texts",
-    "scenario": "good-morning",
-    "text": "Waking up to you is the only vibe I need. 🌅",
-    "emoji": "🌅"
-  },
-  {
-    "id": "morning-2",
-    "category": "texts",
-    "scenario": "good-morning",
-    "text": "Good morning to the main character of my life. 🎭",
-    "emoji": "🌅"
-  },
-  {
-    "id": "morning-3",
-    "category": "texts",
-    "scenario": "good-morning",
-    "text": "Woke up and chose to be obsessed with you today. 💀",
-    "emoji": "🌅"
-  },
-  {
-    "id": "morning-4",
-    "category": "texts",
-    "scenario": "good-morning",
-    "text": "Morning bestie (lover variant). Hope you slay your meetings today. 💅",
-    "emoji": "🌅"
-  },
-  {
-    "id": "morning-5",
-    "category": "texts",
-    "scenario": "good-morning",
-    "text": "Real ones know that you're the best part of waking up. ☕",
-    "emoji": "🌅"
-  },
-  {
-    "id": "sad-1",
-    "category": "texts",
-    "scenario": "shes-sad",
-    "text": "You're too iconic to be feeling this way. What can I do? 🥺",
-    "emoji": "🥺"
-  },
-  {
-    "id": "sad-2",
-    "category": "texts",
-    "scenario": "shes-sad",
-    "text": "I'm literally on my way with your favorite drink. Don't move. 🧋",
-    "emoji": "🥺"
-  },
-  {
-    "id": "sad-3",
-    "category": "texts",
-    "scenario": "shes-sad",
-    "text": "The vibe is off without your smile. Let's fix it together. 🫂",
-    "emoji": "🥺"
-  },
-  {
-    "id": "sad-4",
-    "category": "texts",
-    "scenario": "shes-sad",
-    "text": "Sending you all the positive energy in the universe right now. 🪐✨",
-    "emoji": "🥺"
-  },
-  {
-    "id": "fumble-1",
-    "category": "texts",
-    "scenario": "you-messed-up",
-    "text": "I actually have zero brain cells. I'm so sorry. 💀",
-    "emoji": "💀"
-  },
-  {
-    "id": "fumble-2",
-    "category": "texts",
-    "scenario": "you-messed-up",
-    "text": "I definitely fumbled the bag here. Can we restart? 🎮",
-    "emoji": "💀"
-  },
-  {
-    "id": "fumble-3",
-    "category": "texts",
-    "scenario": "you-messed-up",
-    "text": "Currently in my 'apology era'. My bad, baby. 🥀",
-    "emoji": "💀"
-  },
-  {
-    "id": "fumble-4",
-    "category": "texts",
-    "scenario": "you-messed-up",
-    "text": "I'm literally the clown of the year. Please forgive me? 🤡",
-    "emoji": "💀"
-  },
-  {
-    "id": "love-1",
-    "category": "texts",
-    "scenario": "random-affection",
-    "text": "No thoughts, just you. 🫠",
-    "emoji": "💕"
-  },
-  {
-    "id": "love-2",
-    "category": "texts",
-    "scenario": "random-affection",
-    "text": "You're literally my Roman Empire. 🏛️",
-    "emoji": "💕"
-  },
-  {
-    "id": "love-3",
-    "category": "texts",
-    "scenario": "random-affection",
-    "text": "Thinking about you is my personality trait now. 💅",
-    "emoji": "💕"
-  },
-  {
-    "id": "love-4",
-    "category": "texts",
-    "scenario": "random-affection",
-    "text": "Rent free. Always. 🏠💕",
-    "emoji": "💕"
-  },
-  {
-    "id": "love-5",
-    "category": "texts",
-    "scenario": "random-affection",
-    "text": "Just realized how much I'm winning because I have you. 🏆",
-    "emoji": "💕"
-  },
-  {
-    "id": "miss-1",
-    "category": "texts",
-    "scenario": "miss-you",
-    "text": "Manifesting us in the same room right now. 🕯️🕯️",
-    "emoji": "💭"
-  },
-  {
-    "id": "miss-2",
-    "category": "texts",
-    "scenario": "miss-you",
-    "text": "Missing you is actually physical pain. Come back soon. 🥺",
-    "emoji": "💭"
-  },
-  {
-    "id": "miss-3",
-    "category": "texts",
-    "scenario": "miss-you",
-    "text": "Counting down the seconds until I can see your face. ⏳❤️",
-    "emoji": "💭"
-  },
-  {
-    "id": "date-1",
-    "category": "texts",
-    "scenario": "date-ideas",
-    "text": "Let's go to that cute aesthetic café you saw on TikTok. ☕📸",
-    "emoji": "🌸"
-  },
-  {
-    "id": "date-2",
-    "category": "texts",
-    "scenario": "date-ideas",
-    "text": "Full send on a road trip this weekend? Just us. 🚗💨",
-    "emoji": "🌸"
-  },
-  {
-    "id": "date-3",
-    "category": "texts",
-    "scenario": "date-ideas",
-    "text": "Picnic date? I'll bring the snacks, you bring the vibes. 🧺🍇",
-    "emoji": "🌸"
-  },
-  {
-    "id": "slay-1",
-    "category": "texts",
-    "scenario": "compliments",
-    "text": "Face card never declines. 💳✨",
-    "emoji": "✨"
-  },
-  {
-    "id": "slay-2",
-    "category": "texts",
-    "scenario": "compliments",
-    "text": "No one is doing it like you. Literally 1 of 1. 🥇",
-    "emoji": "✨"
-  },
-  {
-    "id": "slay-3",
-    "category": "texts",
-    "scenario": "compliments",
-    "text": "You're the blueprint. Everyone else is just a copy. 📐💅",
-    "emoji": "✨"
-  },
-  {
-    "id": "sorry-1",
-    "category": "texts",
-    "scenario": "apologies",
-    "text": "I'm sorry for being a glitch in our matrix. I love you. 👾💔",
-    "emoji": "🥀"
-  },
-  {
-    "id": "sorry-2",
-    "category": "texts",
-    "scenario": "apologies",
-    "text": "My bad. I'm still learning how to be the person you deserve. 📈❤️",
-    "emoji": "🥀"
-  },
-  {
-    "id": "night-1",
-    "category": "texts",
-    "scenario": "goodnight",
-    "text": "Goodnight to my favorite human. See you in my dreams. 🌙",
-    "emoji": "🌙"
-  },
-  {
-    "id": "night-2",
-    "category": "texts",
-    "scenario": "goodnight",
-    "text": "Go to sleep knowing you're the best thing that ever happened to me. 🧸💤",
-    "emoji": "🌙"
-  },
-  {
-    "id": "just-1",
-    "category": "texts",
-    "scenario": "just-because",
-    "text": "You have my whole heart, no cap. 🧢❤️",
-    "emoji": "🎀"
-  },
-  {
-    "id": "just-2",
-    "category": "texts",
-    "scenario": "just-because",
-    "text": "Being with you is a whole experience. 10/10 would recommend. ⭐⭐⭐⭐⭐",
-    "emoji": "🎀"
-  },
-  {
-    "id": "just-3",
-    "category": "texts",
-    "scenario": "just-because",
-    "text": "I'm so glad we're mutually obsessed with each other. 🥰💅",
-    "emoji": "🎀"
-  },
-  {
-    "id": "morning-6",
-    "category": "texts",
-    "scenario": "good-morning",
-    "text": "Another day of being grateful you're my person. 💖",
-    "emoji": "🌅"
-  },
-  {
-    "id": "love-6",
-    "category": "texts",
-    "scenario": "random-affection",
-    "text": "You're my favorite person to annoy. 🦖❤️",
-    "emoji": "💕"
-  },
-  {
-    "id": "slay-4",
-    "category": "texts",
-    "scenario": "compliments",
-    "text": "You're literally glowing today. Keep that energy. ✨🔋",
-    "emoji": "✨"
-  },
-  {
-    "id": "night-3",
-    "category": "texts",
-    "scenario": "goodnight",
-    "text": "Sleep tight. I’ll be the one dreaming about you. 🕊️✨",
-    "emoji": "🌙"
-  },
-  {
-    "id": "just-4",
-    "category": "texts",
-    "scenario": "just-because",
-    "text": "Real ones stay down for each other, and you're the realest. 💯",
-    "emoji": "🎀"
-  },
-  {
-    "id": "sad-5",
-    "category": "texts",
-    "scenario": "shes-sad",
-    "text": "I'm your safe space. Whatever you need, I got you. 🏠❤️",
-    "emoji": "🥺"
-  },
-  {
-    "id": "miss-4",
-    "category": "texts",
-    "scenario": "miss-you",
-    "text": "My phone is boring when you're not texting me back. 📱💤",
-    "emoji": "💭"
-  },
-  {
-    "id": "date-4",
-    "category": "texts",
-    "scenario": "date-ideas",
-    "text": "Let's do a late night drive with no destination. Just music and us. 🌌🎶",
-    "emoji": "🌸"
-  },
-  {
-    "id": "love-7",
-    "category": "texts",
-    "scenario": "random-affection",
-    "text": "I'm locked in. Forever. 😤❤️",
-    "emoji": "💕"
-  },
-  {
-    "id": "morning-7",
-    "category": "texts",
-    "scenario": "good-morning",
-    "text": "I hope your coffee is as strong as my feelings for you today. ☕💪",
-    "emoji": "🌅"
-  },
-  {
-    "id": "slay-5",
-    "category": "texts",
-    "scenario": "compliments",
-    "text": "You're a rare distribution. Never change. 💎",
-    "emoji": "✨"
-  }
+  { "id": "morning-1", "category": "texts", "scenario": "good-morning", "text": "Waking up to you is the only vibe I need. 🌅", "emoji": "🌅" },
+  { "id": "morning-2", "category": "texts", "scenario": "good-morning", "text": "Good morning to the main character of my life. 🎭", "emoji": "🌅" },
+  { "id": "morning-3", "category": "texts", "scenario": "good-morning", "text": "Woke up and chose to be obsessed with you today. 💀", "emoji": "🌅" },
+  { "id": "morning-4", "category": "texts", "scenario": "good-morning", "text": "Morning bestie (lover variant). Hope you slay your meetings today. 💅", "emoji": "🌅" },
+  { "id": "morning-5", "category": "texts", "scenario": "good-morning", "text": "Real ones know that you're the best part of waking up. ☕", "emoji": "🌅" },
+  { "id": "morning-6", "category": "texts", "scenario": "good-morning", "text": "Another day of being grateful you're my person. 💖", "emoji": "🌅" },
+  { "id": "morning-7", "category": "texts", "scenario": "good-morning", "text": "I hope your coffee is as strong as my feelings for you today. 💪☕", "emoji": "🌅" },
+  { "id": "morning-8", "category": "texts", "scenario": "good-morning", "text": "Morning! Don't forget to be iconic today. ✨", "emoji": "🌅" },
+  { "id": "morning-9", "category": "texts", "scenario": "good-morning", "text": "You're the only notification I want to see at 7am. 📱💕", "emoji": "🌅" },
+  { "id": "morning-10", "category": "texts", "scenario": "good-morning", "text": "Manifesting a perfect day for my favorite human. 🕯️✨", "emoji": "🌅" },
+
+  { "id": "sad-1", "category": "texts", "scenario": "shes-sad", "text": "You're too iconic to be feeling this way. What can I do? 🥺", "emoji": "🥺" },
+  { "id": "sad-2", "category": "texts", "scenario": "shes-sad", "text": "I'm literally on my way with your favorite drink. Don't move. 🧋", "emoji": "🥺" },
+  { "id": "sad-3", "category": "texts", "scenario": "shes-sad", "text": "The vibe is off without your smile. Let's fix it together. 🫂", "emoji": "🥺" },
+  { "id": "sad-4", "category": "texts", "scenario": "shes-sad", "text": "Sending you all the positive energy in the universe right now. 🪐✨", "emoji": "🥺" },
+  { "id": "sad-5", "category": "texts", "scenario": "shes-sad", "text": "I'm your safe space. Whatever you need, I got you. 🏠❤️", "emoji": "🥺" },
+  { "id": "sad-6", "category": "texts", "scenario": "shes-sad", "text": "Life is being a mid version of itself today. Let's upgrade it. 📈", "emoji": "🥺" },
+  { "id": "sad-7", "category": "texts", "scenario": "shes-sad", "text": "If anyone is bothering you, just know they're a clown. 🤡💖", "emoji": "🥺" },
+
+  { "id": "fumble-1", "category": "texts", "scenario": "you-messed-up", "text": "I actually have zero brain cells. I'm so sorry. 💀", "emoji": "💀" },
+  { "id": "fumble-2", "category": "texts", "scenario": "you-messed-up", "text": "I definitely fumbled the bag here. Can we restart? 🎮", "emoji": "💀" },
+  { "id": "fumble-3", "category": "texts", "scenario": "you-messed-up", "text": "Currently in my 'apology era'. My bad, baby. 🥀", "emoji": "💀" },
+  { "id": "fumble-4", "category": "texts", "scenario": "you-messed-up", "text": "I'm literally the clown of the year. Please forgive me? 🤡", "emoji": "💀" },
+  { "id": "fumble-5", "category": "texts", "scenario": "you-messed-up", "text": "I made a choice and it was the wrong one. Big L for me. 📉💔", "emoji": "💀" },
+
+  { "id": "love-1", "category": "texts", "scenario": "random-affection", "text": "No thoughts, just you. 🫠", "emoji": "💕" },
+  { "id": "love-2", "category": "texts", "scenario": "random-affection", "text": "You're literally my Roman Empire. 🏛️", "emoji": "💕" },
+  { "id": "love-3", "category": "texts", "scenario": "random-affection", "text": "Thinking about you is my personality trait now. 💅", "emoji": "💕" },
+  { "id": "love-4", "category": "texts", "scenario": "random-affection", "text": "Rent free. Always. 🏠💕", "emoji": "💕" },
+  { "id": "love-5", "category": "texts", "scenario": "random-affection", "text": "Just realized how much I'm winning because I have you. 🏆", "emoji": "💕" },
+  { "id": "love-6", "category": "texts", "scenario": "random-affection", "text": "You're my favorite person to annoy. 🦖❤️", "emoji": "💕" },
+  { "id": "love-7", "category": "texts", "scenario": "random-affection", "text": "I'm locked in. Forever. 😤❤️", "emoji": "💕" },
+  { "id": "love-8", "category": "texts", "scenario": "random-affection", "text": "I'm down bad for you. 🫠💕", "emoji": "💕" },
+  { "id": "love-9", "category": "texts", "scenario": "random-affection", "text": "Real ones know I'm actually your biggest fan. 📣", "emoji": "💕" },
+  { "id": "love-10", "category": "texts", "scenario": "random-affection", "text": "You're the 1 of 1. 🥇", "emoji": "💕" },
+
+  { "id": "miss-1", "category": "texts", "scenario": "miss-you", "text": "Manifesting us in the same room right now. 🕯️🕯️", "emoji": "💭" },
+  { "id": "miss-2", "category": "texts", "scenario": "miss-you", "text": "Missing you is actually physical pain. Come back soon. 🥺", "emoji": "💭" },
+  { "id": "miss-3", "category": "texts", "scenario": "miss-you", "text": "Counting down the seconds until I can see your face. ⏳❤️", "emoji": "💭" },
+  { "id": "miss-4", "category": "texts", "scenario": "miss-you", "text": "My phone is boring when you're not texting me back. 📱💤", "emoji": "💭" },
+  { "id": "miss-5", "category": "texts", "scenario": "miss-you", "text": "I'm currently missing my other half. 💔🧩", "emoji": "💭" },
+
+  { "id": "date-1", "category": "texts", "scenario": "date-ideas", "text": "Let's go to that cute aesthetic café you saw on TikTok. ☕📸", "emoji": "🌸" },
+  { "id": "date-2", "category": "texts", "scenario": "date-ideas", "text": "Full send on a road trip this weekend? Just us. 🚗💨", "emoji": "🌸" },
+  { "id": "date-3", "category": "texts", "scenario": "date-ideas", "text": "Picnic date? I'll bring the snacks, you bring the vibes. 🧺🍇", "emoji": "🌸" },
+  { "id": "date-4", "category": "texts", "scenario": "date-ideas", "text": "Let's do a late night drive with no destination. Just us. 🌌🎶", "emoji": "🌸" },
+  { "id": "date-5", "category": "texts", "scenario": "date-ideas", "text": "Movie marathon but we just talk through the whole thing. 🍿🎬", "emoji": "🌸" },
+
+  { "id": "slay-1", "category": "texts", "scenario": "compliments", "text": "Face card never declines. 💳✨", "emoji": "✨" },
+  { "id": "slay-2", "category": "texts", "scenario": "compliments", "text": "No one is doing it like you. Literally 1 of 1. 🥇", "emoji": "✨" },
+  { "id": "slay-3", "category": "texts", "scenario": "compliments", "text": "You're the blueprint. Everyone else is just a copy. 📐💅", "emoji": "✨" },
+  { "id": "slay-4", "category": "texts", "scenario": "compliments", "text": "You're literally glowing today. Keep that energy. ✨🔋", "emoji": "✨" },
+  { "id": "slay-5", "category": "texts", "scenario": "compliments", "text": "You're a rare distribution. Never change. 💎", "emoji": "✨" },
+  { "id": "slay-6", "category": "texts", "scenario": "compliments", "text": "Your eye contact is legendary. 🧿✨", "emoji": "✨" },
+
+  { "id": "sorry-1", "category": "texts", "scenario": "apologies", "text": "I'm sorry for being a glitch in our matrix. I love you. 👾💔", "emoji": "🥀" },
+  { "id": "sorry-2", "category": "texts", "scenario": "apologies", "text": "My bad. I'm still learning how to be the person you deserve. 📈❤️", "emoji": "🥀" },
+  { "id": "sorry-3", "category": "texts", "scenario": "apologies", "text": "I behaved like a npc today. I'm sorry. 🎮🥀", "emoji": "🥀" },
+
+  { "id": "night-1", "category": "texts", "scenario": "goodnight", "text": "Goodnight to my favorite human. See you in my dreams. 🌙", "emoji": "🌙" },
+  { "id": "night-2", "category": "texts", "scenario": "goodnight", "text": "Go to sleep knowing you're the best thing that ever happened to me. 🧸💤", "emoji": "🌙" },
+  { "id": "night-3", "category": "texts", "scenario": "goodnight", "text": "Sleep tight. I’ll be the one dreaming about you. 🕊️✨", "emoji": "🌙" },
+  { "id": "night-4", "category": "texts", "scenario": "goodnight", "text": "Sweet dreams to the person who holds my whole heart. 🌌💖", "emoji": "🌙" },
+
+  { "id": "just-1", "category": "texts", "scenario": "just-because", "text": "You have my whole heart, no cap. 🧢❤️", "emoji": "🎀" },
+  { "id": "just-2", "category": "texts", "scenario": "just-because", "text": "Being with you is a whole experience. 10/10 would recommend. ⭐⭐⭐⭐⭐", "emoji": "🎀" },
+  { "id": "just-3", "category": "texts", "scenario": "just-because", "text": "I'm so glad we're mutually obsessed with each other. 🥰💅", "emoji": "🎀" },
+  { "id": "just-4", "category": "texts", "scenario": "just-because", "text": "Real ones stay down for each other, and you're the realest. 💯", "emoji": "🎀" },
+  { "id": "just-5", "category": "texts", "scenario": "just-because", "text": "Just a random reminder that you're everything to me. 🌎💕", "emoji": "🎀" }
 ]
