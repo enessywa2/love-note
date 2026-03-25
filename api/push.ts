@@ -8,7 +8,20 @@ const vapidPublic = process.env.VITE_VAPID_PUBLIC_KEY;
 const vapidPrivate = process.env.VAPID_PRIVATE_KEY;
 const vapidSubject = process.env.VAPID_SUBJECT || 'mailto:hello@lovenote.com';
 
-export default async function handler(req: any, res: any) {
+interface Request {
+  method: string;
+  headers: {
+    authorization?: string;
+  };
+}
+
+interface Response {
+  status: (code: number) => {
+    json: (data: any) => Response;
+  };
+}
+
+export default async function handler(req: Request, res: Response) {
   if (req.method !== 'POST' && req.method !== 'GET') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
