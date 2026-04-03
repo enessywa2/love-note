@@ -68,7 +68,7 @@ export default function LoginPage() {
               <Link to="/signup" className="text-primary font-bold hover:underline">Sign up for free</Link>
             </p>
             <p className="mt-8 text-center text-[10px] font-medium text-muted-foreground/40 tracking-widest uppercase">
-              Designed & Developed by <a href="https://github.com/enessywa1" target="_blank" rel="noopener noreferrer" className="text-primary/50 hover:underline">Murashi Creatives</a>
+              Designed & Developed by <a href="https://murashicreatives.vercel.app" target="_blank" rel="noopener noreferrer" className="text-primary/50 hover:underline">Murashi Creatives</a>
             </p>
           </div>
         </div>

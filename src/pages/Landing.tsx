@@ -471,7 +471,7 @@ export default function LandingPage() {
         </div>
         <p className="text-xs text-muted-foreground">
           Built with love by{" "}
-          <a href="https://github.com/enessywa1" target="_blank" rel="noopener noreferrer" className="font-semibold text-primary/70 hover:underline">Murashi Creatives</a>
+          <a href="https://murashicreatives.vercel.app" target="_blank" rel="noopener noreferrer" className="font-semibold text-primary/70 hover:underline">Murashi Creatives</a>
         </p>
         <div className="mt-4 flex items-center justify-center gap-6 text-xs text-muted-foreground/60">
           <Link to="/login" className="hover:text-primary transition-colors">Sign In</Link>
