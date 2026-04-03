@@ -32,9 +32,9 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-rose-50 to-teal-50 dark:from-slate-950 dark:to-slate-900">
       <div className="w-full max-w-md animate-fade-up">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-primary/10 mb-4 animate-float">
+          <Link to="/welcome" className="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-primary/10 mb-4 animate-float hover:scale-110 transition-transform">
             <Heart className="text-primary fill-primary" size={32} />
-          </div>
+          </Link>
           <h1 className="text-3xl font-extrabold text-foreground tracking-tight">Welcome Back</h1>
           <p className="text-muted-foreground mt-2">Sign in to your love story</p>
         </div>
@@ -68,7 +68,7 @@ export default function LoginPage() {
               <Link to="/signup" className="text-primary font-bold hover:underline">Sign up for free</Link>
             </p>
             <p className="mt-8 text-center text-[10px] font-medium text-muted-foreground/40 tracking-widest uppercase">
-              Designed & Developed by <span className="text-primary/50">Murashi Creatives</span>
+              Designed & Developed by <a href="https://github.com/enessywa1" target="_blank" rel="noopener noreferrer" className="text-primary/50 hover:underline">Murashi Creatives</a>
             </p>
           </div>
         </div>

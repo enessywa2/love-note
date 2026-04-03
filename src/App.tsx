@@ -11,6 +11,7 @@ import CalendarPage from "./pages/Calendar";
 import Gallery from "./pages/Gallery";
 import LoginPage from "./pages/Login";
 import SignupPage from "./pages/Signup";
+import LandingPage from "./pages/Landing";
 import NotFound from "./pages/NotFound";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { PartnerProvider } from "@/contexts/PartnerContext"; // Added PartnerProvider import
@@ -34,6 +35,9 @@ const AppContent = () => {
   return (
     <>
       <Routes>
+        {/* Public landing page – shown to visitors who have no account yet */}
+        <Route path="/welcome" element={!token ? <LandingPage /> : <Navigate to="/" />} />
+
         {/* Auth Routes */}
         <Route path="/login" element={!token ? <LoginPage /> : <Navigate to="/" />} />
         <Route path="/signup" element={!token ? <SignupPage /> : <Navigate to="/" />} />
@@ -47,7 +51,8 @@ const AppContent = () => {
           <Route path="/gallery" element={<Gallery />} />
         </Route>
         
-        <Route path="*" element={<NotFound />} />
+        {/* Unauthenticated root → landing page */}
+        <Route path="*" element={!token ? <Navigate to="/welcome" replace /> : <NotFound />} />
       </Routes>
       {token && <BottomNav />}
     </>
