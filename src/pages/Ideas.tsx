@@ -87,8 +87,8 @@ export default function Ideas() {
         </div>
       </div>
 
-      {/* Ideas List */}
-      {selectedScenario && (
+      {/* Ideas List or Preview */}
+      {selectedScenario ? (
         <div className="space-y-3">
           {filteredIdeas.map((idea, i) => (
             <div
@@ -108,12 +108,47 @@ export default function Ideas() {
             </div>
           ))}
         </div>
-      )}
-
-      {!selectedScenario && !randomPick && (
-        <div className="text-center py-12 animate-fade-up" style={{ animationDelay: "300ms" }}>
-          <p className="text-4xl mb-3">🧸</p>
-          <p className="text-muted-foreground text-sm">Pick a scenario above or let me suggest something!</p>
+      ) : (
+        <div className="space-y-8 animate-fade-up" style={{ animationDelay: "300ms" }}>
+          <div className="grid grid-cols-1 gap-6">
+            {scenarios.slice(0, 4).map((scenario) => {
+              const sampleIdeas = getIdeasByScenario(scenario.id).slice(0, 2);
+              return (
+                <div key={scenario.id} className="space-y-3">
+                  <div className="flex items-center gap-2 px-1">
+                    <span className="text-sm font-bold text-foreground/80">{scenario.emoji} {scenario.label}</span>
+                    <div className="h-[1px] flex-1 bg-border/30" />
+                  </div>
+                  <div className="grid grid-cols-1 gap-3">
+                    {sampleIdeas.map((idea) => (
+                      <div
+                        key={idea.id}
+                        className="glass-card rounded-2xl p-4 flex items-start gap-3 bg-white/30 dark:bg-slate-900/20"
+                      >
+                        <p className="flex-1 text-sm text-foreground/80 leading-relaxed">{idea.text}</p>
+                        <button
+                          onClick={() => handleCopy(idea)}
+                          className="p-2 rounded-xl bg-muted/30 text-muted-foreground hover:text-primary transition-all"
+                        >
+                          {copiedId === idea.id ? <Check size={14} className="text-primary" /> : <Copy size={14} />}
+                        </button>
+                      </div>
+                    ))}
+                    <button 
+                      onClick={() => setSelectedScenario(scenario.id)}
+                      className="text-[10px] font-bold uppercase tracking-widest text-primary/60 hover:text-primary transition-colors text-center py-1"
+                    >
+                      View More {scenario.label} →
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          
+          <div className="text-center py-4 opacity-50">
+            <p className="text-[10px] font-bold tracking-widest uppercase italic">More categories available above ✨</p>
+          </div>
         </div>
       )}
     </div>

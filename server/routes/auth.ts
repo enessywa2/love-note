@@ -54,11 +54,23 @@ router.post('/login', async (req, res) => {
 router.delete('/account', authenticateToken, async (req: any, res) => {
   const userId = req.user.id;
   try {
-    // Delete all events first (foreign key constraint)
-    await prisma.event.deleteMany({ where: { userId } });
-    await prisma.user.delete({ where: { id: userId } });
+    // Delete all data associated with the user in a transaction
+    await prisma.$transaction([
+      prisma.event.deleteMany({ where: { userId } }),
+      prisma.note.deleteMany({ where: { userId } }),
+      prisma.photo.deleteMany({ where: { userId } }),
+      prisma.pushSubscription.deleteMany({ where: { userId } }),
+      // If this user was someone's partner, unlink them
+      prisma.user.updateMany({
+        where: { partnerId: userId },
+        data: { partnerId: null }
+      }),
+      prisma.user.delete({ where: { id: userId } }),
+    ]);
+    
     res.json({ message: 'Account deleted successfully' });
   } catch (err) {
+    console.error('Delete account error:', err);
     res.status(500).json({ error: 'Server error' });
   }
 });

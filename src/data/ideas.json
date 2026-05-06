@@ -67,5 +67,19 @@
   { "id": "just-2", "category": "texts", "scenario": "just-because", "text": "Being with you is a whole experience. 10/10 would recommend. ⭐⭐⭐⭐⭐", "emoji": "🎀" },
   { "id": "just-3", "category": "texts", "scenario": "just-because", "text": "I'm so glad we're mutually obsessed with each other. 🥰💅", "emoji": "🎀" },
   { "id": "just-4", "category": "texts", "scenario": "just-because", "text": "Real ones stay down for each other, and you're the realest. 💯", "emoji": "🎀" },
-  { "id": "just-5", "category": "texts", "scenario": "just-because", "text": "Just a random reminder that you're everything to me. 🌎💕", "emoji": "🎀" }
+  { "id": "just-5", "category": "texts", "scenario": "just-because", "text": "Just a random reminder that you're everything to me. 🌎💕", "emoji": "🎀" },
+  { "id": "morning-11", "category": "texts", "scenario": "good-morning", "text": "I was dreaming of you, but waking up to you is even better. ✨☕", "emoji": "🌅" },
+  { "id": "morning-12", "category": "texts", "scenario": "good-morning", "text": "Sending you a digital hug to start your morning right. 🫂💖", "emoji": "🌅" },
+  { "id": "sad-8", "category": "texts", "scenario": "shes-sad", "text": "It's okay to not be okay. I'm right here with you. 🕊️❤️", "emoji": "🥺" },
+  { "id": "sad-9", "category": "texts", "scenario": "shes-sad", "text": "I'd take all your stress away if I could. For now, let's just breathe. 🌬️💕", "emoji": "🥺" },
+  { "id": "love-11", "category": "texts", "scenario": "random-affection", "text": "You're my favorite thought. 🧠✨", "emoji": "💕" },
+  { "id": "love-12", "category": "texts", "scenario": "random-affection", "text": "Everything is better when I'm with you. 🌈", "emoji": "💕" },
+  { "id": "date-6", "category": "texts", "scenario": "date-ideas", "text": "Let's go stargazing tonight. 🌠🔭", "emoji": "🌸" },
+  { "id": "date-7", "category": "texts", "scenario": "date-ideas", "text": "Bowling date? I'm ready to lose if it makes you laugh. 🎳😂", "emoji": "🌸" },
+  { "id": "slay-7", "category": "texts", "scenario": "compliments", "text": "You're the main attraction everywhere you go. 📸🔥", "emoji": "✨" },
+  { "id": "slay-8", "category": "texts", "scenario": "compliments", "text": "Your energy is literally unmatched. ⚡💖", "emoji": "✨" },
+  { "id": "night-5", "category": "texts", "scenario": "goodnight", "text": "Can't wait to wake up and see you again. Sleep well. 🌙💖", "emoji": "🌙" },
+  { "id": "night-6", "category": "texts", "scenario": "goodnight", "text": "I'm hugging my pillow and pretending it's you. 🧸💕", "emoji": "🌙" },
+  { "id": "just-6", "category": "texts", "scenario": "just-because", "text": "You're my happy place. 🏡❤️", "emoji": "🎀" },
+  { "id": "just-7", "category": "texts", "scenario": "just-because", "text": "I love the way you exist. 🌸✨", "emoji": "🎀" }
 ]

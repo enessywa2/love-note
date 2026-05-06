@@ -168,7 +168,7 @@ export default function Dashboard() {
   const [partnerEmail, setPartnerEmail] = useState("");
   const [isLinking, setIsLinking] = useState(false);
   
-  const { logout, user } = useAuth();
+  const { logout, user, token } = useAuth();
   const { partner, myMood, isLinked, linkPartner, unlinkPartner, updateMood: syncMoodWithDB } = usePartner();
   const { events } = useEvents();
 
@@ -213,12 +213,29 @@ export default function Dashboard() {
   const handleDeleteAccount = async () => {
     setIsDeleting(true);
     try {
+      if (token) {
+        const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/auth/account`, {
+          method: 'DELETE',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        if (!response.ok) {
+          const data = await response.json();
+          throw new Error(data.error || 'Failed to delete account');
+        }
+        
+        toast.success("Account deleted. We'll miss you! 💔");
+      }
+      
+      // Also clean up local Supabase events just in case, though the server handles it
       if (user) {
         await supabase.from('Event').delete().eq('userId', user.id);
       }
+      
       logout();
-    } catch {
-      // silently fail
+    } catch (err: any) {
+      toast.error(err.message || "Failed to delete account. 🖼️");
+      console.error(err);
     } finally {
       setIsDeleting(false);
     }
