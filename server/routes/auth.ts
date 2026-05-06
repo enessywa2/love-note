@@ -2,7 +2,7 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import prisma from '../prismaClient';
-import { authenticateToken } from '../middleware/auth';
+import { authenticateToken, supabaseAdmin } from '../middleware/auth';
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'love-notes-secret-key';
@@ -67,6 +67,15 @@ router.delete('/account', authenticateToken, async (req: any, res) => {
       }),
       prisma.user.delete({ where: { id: userId } }),
     ]);
+
+    // If admin client is available, delete from Supabase Auth too
+    if (supabaseAdmin) {
+      const { error } = await supabaseAdmin.auth.admin.deleteUser(userId);
+      if (error) {
+        console.error('Supabase Auth delete error:', error);
+        // We don't fail the whole request since local data is already gone
+      }
+    }
     
     res.json({ message: 'Account deleted successfully' });
   } catch (err) {

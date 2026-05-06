@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Heart, CalendarHeart, Sparkles, LogOut, Trash2, AlertTriangle, Bell, UserPlus, Link2, Unlink } from "lucide-react";
+import { Heart, CalendarHeart, Sparkles, LogOut, Trash2, AlertTriangle, Bell, UserPlus, Link2, Unlink, Settings, ShieldAlert } from "lucide-react";
 import Mascot, { getRandomTip } from "@/components/Mascot";
 import FloatingHearts from "@/components/FloatingHearts";
 import EmojiPop from "@/components/EmojiPop";
@@ -167,6 +167,7 @@ export default function Dashboard() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [partnerEmail, setPartnerEmail] = useState("");
   const [isLinking, setIsLinking] = useState(false);
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
   
   const { logout, user, token } = useAuth();
   const { partner, myMood, isLinked, linkPartner, unlinkPartner, updateMood: syncMoodWithDB } = usePartner();
@@ -302,11 +303,11 @@ export default function Dashboard() {
               </DialogContent>
             </Dialog>
             <ThemeToggle />
-            <button
-              onClick={() => setShowDeleteModal(true)}
-              className="p-2 rounded-xl bg-card border border-border/50 text-muted-foreground hover:text-rose-500 transition-all active:scale-90"
+            <button 
+              onClick={() => setShowSettingsModal(true)}
+              className="p-2 rounded-xl bg-card border border-border/50 text-muted-foreground hover:text-primary transition-all active:scale-90"
             >
-              <Trash2 size={18} />
+              <Settings size={18} />
             </button>
             <button 
               onClick={logout}
@@ -318,6 +319,65 @@ export default function Dashboard() {
         </div>
         <Mascot message={tip} size="sm" className="mb-4" />
       </div>
+
+      {/* Account Settings Modal */}
+      <Dialog open={showSettingsModal} onOpenChange={setShowSettingsModal}>
+        <DialogContent className="rounded-[2rem] max-w-[90vw] sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold flex items-center gap-2">
+              Account Settings
+            </DialogTitle>
+            <DialogDescription>
+              Manage your connection and account data.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-6 pt-4">
+            {/* Connection Section */}
+            <div className="space-y-3">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Connection</h3>
+              {isLinked ? (
+                <div className="space-y-3">
+                  <div className="p-4 bg-primary/5 rounded-2xl border border-primary/10">
+                    <p className="text-xs text-primary font-bold mb-1 uppercase tracking-tighter">Linked with</p>
+                    <p className="text-sm font-extrabold">{partner?.name || partner?.email}</p>
+                    <p className="text-[10px] text-muted-foreground">{partner?.email}</p>
+                  </div>
+                  <Button variant="outline" className="w-full rounded-xl border-rose-200 text-rose-500 hover:bg-rose-50 hover:text-rose-600" onClick={() => { unlinkPartner(); setShowSettingsModal(false); }}>
+                    <Unlink className="mr-2 h-4 w-4" /> Unlink Partner
+                  </Button>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <p className="text-xs text-muted-foreground italic">No partner linked yet.</p>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" className="w-full rounded-xl border-primary/20 text-primary" onClick={() => setShowSettingsModal(false)}>
+                      <UserPlus className="mr-2 h-4 w-4" /> Link a Partner
+                    </Button>
+                  </DialogTrigger>
+                </div>
+              )}
+            </div>
+
+            <div className="h-[1px] bg-border/50" />
+
+            {/* Danger Zone Section */}
+            <div className="space-y-3">
+              <h3 className="text-xs font-bold uppercase tracking-widest text-rose-500/70">Danger Zone</h3>
+              <Button 
+                variant="destructive" 
+                className="w-full rounded-xl bg-rose-500/10 text-rose-500 border border-rose-500/20 hover:bg-rose-500 hover:text-white" 
+                onClick={() => { setShowSettingsModal(false); setShowDeleteModal(true); }}
+              >
+                <ShieldAlert className="mr-2 h-4 w-4" /> Delete My Account
+              </Button>
+              <p className="text-[10px] text-muted-foreground text-center px-4">
+                Deleting your account will permanently remove all notes, photos, and events.
+              </p>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <LoverFrame />
 
