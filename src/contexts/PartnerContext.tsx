@@ -60,7 +60,15 @@ export const PartnerProvider: React.FC<{ children: React.ReactNode }> = ({ child
         throw new Error(`Partner status request failed with ${response.status}`);
       }
 
-      const data = await response.json();
+      const contentType = response.headers.get('content-type') || '';
+      const isJson = contentType.includes('application/json');
+      const data = isJson ? await response.json() : null;
+
+      if (!data || typeof data !== 'object') {
+        setPartner(null);
+        setMyMood(null);
+        return;
+      }
 
       setPartner(data.partner || null);
       setMyMood(data.user?.mood ?? null);
