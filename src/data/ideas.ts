@@ -1,4 +1,4 @@
-import ideasData from './ideas.json';
+import ideasDataUrl from './ideas.json?url';
 
 export interface Idea {
   id: string;
@@ -21,13 +21,38 @@ export const scenarios = [
   { id: "just-because", label: "Just Bc 🎀", emoji: "🎀", color: "bg-cream" },
 ] as const;
 
-export const ideas: Idea[] = ideasData as Idea[];
+let ideasCache: Idea[] | null = null;
+let ideasPromise: Promise<Idea[]> | null = null;
 
-export function getIdeasByScenario(scenarioId: string): Idea[] {
-  return ideas.filter(i => i.scenario === scenarioId);
+async function loadIdeas(): Promise<Idea[]> {
+  if (ideasCache) {
+    return ideasCache;
+  }
+
+  if (!ideasPromise) {
+    ideasPromise = fetch(ideasDataUrl)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Failed to load ideas data: ${response.status}`);
+        }
+        return response.json() as Promise<Idea[]>;
+      })
+      .then((data) => {
+        ideasCache = data;
+        return ideasCache;
+      });
+  }
+
+  return ideasPromise;
 }
 
-export function getRandomIdea(scenarioId?: string): Idea {
-  const pool = scenarioId ? getIdeasByScenario(scenarioId) : ideas;
+export async function getIdeasByScenario(scenarioId: string): Promise<Idea[]> {
+  const ideas = await loadIdeas();
+  return ideas.filter((idea) => idea.scenario === scenarioId);
+}
+
+export async function getRandomIdea(scenarioId?: string): Promise<Idea> {
+  const ideas = await loadIdeas();
+  const pool = scenarioId ? (await getIdeasByScenario(scenarioId)) : ideas;
   return pool[Math.floor(Math.random() * pool.length)];
 }

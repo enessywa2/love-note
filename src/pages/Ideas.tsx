@@ -1,28 +1,61 @@
 import { useEffect, useMemo, useState } from "react";
 import { Shuffle, Copy, Check, Sparkles } from "lucide-react";
-import { scenarios, getIdeasByScenario, getRandomIdea, type Idea } from "@/data/ideas";
+import type { Idea } from "@/data/ideas";
 import { toast } from "sonner";
 
+type IdeasModule = typeof import("@/data/ideas");
+
 export default function Ideas() {
+  const [ideasModule, setIdeasModule] = useState<IdeasModule | null>(null);
   const [selectedScenario, setSelectedScenario] = useState<string | null>(null);
+  const [filteredIdeas, setFilteredIdeas] = useState<Idea[]>([]);
   const [randomPick, setRandomPick] = useState<Idea | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [itemsToShow, setItemsToShow] = useState(30);
 
   useEffect(() => {
+    let active = true;
+
+    import("@/data/ideas").then((module) => {
+      if (active) {
+        setIdeasModule(module);
+      }
+    });
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  useEffect(() => {
     setItemsToShow(30);
   }, [selectedScenario]);
 
-  const filteredIdeas = useMemo(() => {
-    if (!selectedScenario) return [];
-    return getIdeasByScenario(selectedScenario);
-  }, [selectedScenario]);
+  useEffect(() => {
+    if (!selectedScenario || !ideasModule) {
+      setFilteredIdeas([]);
+      return;
+    }
+
+    let active = true;
+
+    ideasModule.getIdeasByScenario(selectedScenario).then((ideas) => {
+      if (active) {
+        setFilteredIdeas(ideas);
+      }
+    });
+
+    return () => {
+      active = false;
+    };
+  }, [selectedScenario, ideasModule]);
 
   const visibleIdeas = useMemo(() => filteredIdeas.slice(0, itemsToShow), [filteredIdeas, itemsToShow]);
   const hasMore = visibleIdeas.length < filteredIdeas.length;
 
-  const handleRandom = () => {
-    const idea = getRandomIdea(selectedScenario || undefined);
+  const handleRandom = async () => {
+    if (!ideasModule) return;
+    const idea = await ideasModule.getRandomIdea(selectedScenario || undefined);
     setRandomPick(idea);
   };
 
@@ -32,6 +65,21 @@ export default function Ideas() {
     toast.success("Copied to clipboard! 💕");
     setTimeout(() => setCopiedId(null), 2000);
   };
+
+  if (!ideasModule) {
+    return (
+      <div className="page-container">
+        <div className="mb-6 animate-fade-up">
+          <h1 className="text-2xl font-extrabold text-foreground">
+            Idea Generator <span className="inline-block">💡</span>
+          </h1>
+          <p className="text-muted-foreground text-sm mt-1">Loading your ideas…</p>
+        </div>
+      </div>
+    );
+  }
+
+  const { scenarios } = ideasModule;
 
   return (
     <div className="page-container">

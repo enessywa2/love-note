@@ -19,6 +19,9 @@ export default defineConfig(({ mode }) => ({
       srcDir: 'src',
       filename: 'sw.ts',
       registerType: "autoUpdate",
+      injectManifest: {
+        maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
+      },
       devOptions: {
         enabled: true,
         type: 'module',
@@ -50,6 +53,21 @@ export default defineConfig(({ mode }) => ({
       },
     }),
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes("node_modules")) {
+            if (id.includes("recharts")) return "vendor-recharts";
+            if (id.includes("react-router-dom")) return "vendor-router";
+            if (id.includes("@radix-ui")) return "vendor-radix";
+            if (id.includes("lucide-react")) return "vendor-icons";
+            return "vendor";
+          }
+        },
+      },
+    },
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
