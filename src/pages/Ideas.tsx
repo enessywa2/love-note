@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Shuffle, Copy, Check, Sparkles } from "lucide-react";
 import { scenarios, getIdeasByScenario, getRandomIdea, type Idea } from "@/data/ideas";
 import { toast } from "sonner";
@@ -7,11 +7,19 @@ export default function Ideas() {
   const [selectedScenario, setSelectedScenario] = useState<string | null>(null);
   const [randomPick, setRandomPick] = useState<Idea | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [itemsToShow, setItemsToShow] = useState(30);
+
+  useEffect(() => {
+    setItemsToShow(30);
+  }, [selectedScenario]);
 
   const filteredIdeas = useMemo(() => {
     if (!selectedScenario) return [];
     return getIdeasByScenario(selectedScenario);
   }, [selectedScenario]);
+
+  const visibleIdeas = useMemo(() => filteredIdeas.slice(0, itemsToShow), [filteredIdeas, itemsToShow]);
+  const hasMore = visibleIdeas.length < filteredIdeas.length;
 
   const handleRandom = () => {
     const idea = getRandomIdea(selectedScenario || undefined);
@@ -89,24 +97,42 @@ export default function Ideas() {
 
       {/* Ideas List or Preview */}
       {selectedScenario ? (
-        <div className="space-y-3">
-          {filteredIdeas.map((idea, i) => (
-            <div
-              key={idea.id}
-              className="glass-card rounded-2xl p-4 flex items-start gap-3 animate-fade-up active:scale-[0.98] transition-transform duration-200"
-              style={{ animationDelay: `${i * 60}ms` }}
-            >
-              <div className="flex-1">
-                <p className="text-sm text-foreground leading-relaxed">{idea.text}</p>
-              </div>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between rounded-2xl border border-border/60 bg-card/80 px-4 py-3 text-[13px] text-foreground/70">
+            <span>
+              Showing {visibleIdeas.length} of {filteredIdeas.length} {filteredIdeas.length === 1 ? "idea" : "ideas"}
+            </span>
+            {hasMore ? (
               <button
-                onClick={() => handleCopy(idea)}
-                className="p-2 rounded-xl bg-muted/50 text-muted-foreground hover:text-primary transition-all duration-200 active:scale-90 shrink-0"
+                onClick={() => setItemsToShow((prev) => Math.min(prev + 30, filteredIdeas.length))}
+                className="font-bold text-primary hover:text-primary/80 transition-colors"
               >
-                {copiedId === idea.id ? <Check size={14} className="text-primary" /> : <Copy size={14} />}
+                Load more
               </button>
-            </div>
-          ))}
+            ) : (
+              <span className="text-primary/80">All ideas loaded</span>
+            )}
+          </div>
+
+          <div className="space-y-3">
+            {visibleIdeas.map((idea, i) => (
+              <div
+                key={idea.id}
+                className="glass-card rounded-2xl p-4 flex items-start gap-3 animate-fade-up active:scale-[0.98] transition-transform duration-200"
+                style={{ animationDelay: `${i * 60}ms` }}
+              >
+                <div className="flex-1">
+                  <p className="text-sm text-foreground leading-relaxed">{idea.text}</p>
+                </div>
+                <button
+                  onClick={() => handleCopy(idea)}
+                  className="p-2 rounded-xl bg-muted/50 text-muted-foreground hover:text-primary transition-all duration-200 active:scale-90 shrink-0"
+                >
+                  {copiedId === idea.id ? <Check size={14} className="text-primary" /> : <Copy size={14} />}
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
       ) : (
         <div className="space-y-8 animate-fade-up" style={{ animationDelay: "300ms" }}>
