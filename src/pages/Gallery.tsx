@@ -98,15 +98,12 @@ export default function Gallery() {
 
     try {
       const compressedBase64 = await compressImage(file, 1000, 0.85);
-
-      // Optimistic update
       const optimisticPhoto = { id: Date.now().toString(), imageBase64: compressedBase64, createdAt: new Date().toISOString() };
       setPhotos((prev) => [optimisticPhoto, ...prev]);
 
-      if (!navigator.onLine) {
-        toast.info("Offline: Photo saved locally and will sync when you're back online! ☁️", { id: "gallery-upload" });
-        setIsUploading(false);
-        return;
+      const isOffline = !navigator.onLine;
+      if (isOffline) {
+        toast.info("Offline: Photo will upload when you're back online! ☁️", { id: "gallery-upload" });
       }
 
       const { data, error } = await supabase
@@ -125,10 +122,12 @@ export default function Gallery() {
       toast.success("Beautiful! Photo added to your collage 💕", { id: "gallery-upload" });
     } catch (err) {
       console.error(err);
-      toast.error("Failed to upload photo.", { id: "gallery-upload" });
-      // Revert optimistic update only if it's a real error, not just offline
-      if (navigator.onLine) {
-        setPhotos((prev) => prev.filter(p => !p.id.includes(Date.now().toString().substring(0, 5))));
+      const isOffline = !navigator.onLine;
+      if (isOffline) {
+        toast.info("You're offline — the photo will be queued and uploaded when you reconnect. ☁️", { id: "gallery-upload" });
+      } else {
+        toast.error("Failed to upload photo.", { id: "gallery-upload" });
+        setPhotos((prev) => prev.filter((p) => p.id !== optimisticPhoto.id));
       }
     } finally {
       setIsUploading(false);

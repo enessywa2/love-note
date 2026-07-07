@@ -187,6 +187,12 @@ export default function Dashboard() {
   useEffect(() => {
     if (myMood) {
       setMood(myMood);
+      localStorage.setItem("loveapp-mood", myMood);
+    } else {
+      const storedMood = localStorage.getItem("loveapp-mood");
+      if (storedMood) {
+        setMood(storedMood);
+      }
     }
   }, [myMood]);
 
