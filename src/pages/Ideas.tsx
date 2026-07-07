@@ -9,6 +9,7 @@ export default function Ideas() {
   const [ideasModule, setIdeasModule] = useState<IdeasModule | null>(null);
   const [selectedScenario, setSelectedScenario] = useState<string | null>(null);
   const [filteredIdeas, setFilteredIdeas] = useState<Idea[]>([]);
+  const [sampleIdeasByScenario, setSampleIdeasByScenario] = useState<Record<string, Idea[]>>({});
   const [randomPick, setRandomPick] = useState<Idea | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [itemsToShow, setItemsToShow] = useState(30);
@@ -49,6 +50,32 @@ export default function Ideas() {
       active = false;
     };
   }, [selectedScenario, ideasModule]);
+
+  useEffect(() => {
+    if (!ideasModule) return;
+
+    let active = true;
+
+    const loadPreviewIdeas = async () => {
+      const previewScenarios = ideasModule.scenarios.slice(0, 4);
+      const entries = await Promise.all(
+        previewScenarios.map(async (scenario) => {
+          const ideas = await ideasModule.getIdeasByScenario(scenario.id);
+          return [scenario.id, ideas.slice(0, 2)] as const;
+        })
+      );
+
+      if (active) {
+        setSampleIdeasByScenario(Object.fromEntries(entries));
+      }
+    };
+
+    loadPreviewIdeas();
+
+    return () => {
+      active = false;
+    };
+  }, [ideasModule]);
 
   const visibleIdeas = useMemo(() => filteredIdeas.slice(0, itemsToShow), [filteredIdeas, itemsToShow]);
   const hasMore = visibleIdeas.length < filteredIdeas.length;
@@ -186,7 +213,7 @@ export default function Ideas() {
         <div className="space-y-8 animate-fade-up" style={{ animationDelay: "300ms" }}>
           <div className="grid grid-cols-1 gap-6">
             {scenarios.slice(0, 4).map((scenario) => {
-              const sampleIdeas = getIdeasByScenario(scenario.id).slice(0, 2);
+              const sampleIdeas = sampleIdeasByScenario[scenario.id] ?? [];
               return (
                 <div key={scenario.id} className="space-y-3">
                   <div className="flex items-center gap-2 px-1">

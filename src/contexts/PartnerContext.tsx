@@ -25,6 +25,23 @@ interface PartnerContextType {
 
 const PartnerContext = createContext<PartnerContextType | undefined>(undefined);
 
+const getApiUrl = (path: string) => {
+  const configuredUrl = import.meta.env.VITE_API_URL?.trim();
+
+  if (configuredUrl) {
+    return `${configuredUrl.replace(/\/$/, "")}${path}`;
+  }
+
+  if (typeof window !== "undefined") {
+    const host = window.location.hostname;
+    if (host !== "localhost" && host !== "127.0.0.1") {
+      return `${window.location.origin}${path}`;
+    }
+  }
+
+  return `http://localhost:5001${path}`;
+};
+
 export const PartnerProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user, token } = useAuth();
   const [partner, setPartner] = useState<Partner | null>(null);
@@ -35,17 +52,22 @@ export const PartnerProvider: React.FC<{ children: React.ReactNode }> = ({ child
     if (!token) return;
     
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/partner/status`, {
+      const response = await fetch(getApiUrl('/api/partner/status'), {
         headers: { 'Authorization': `Bearer ${token}` }
       });
-      const data = await response.json();
-      
-      setPartner(data.partner || null);
-      if (data.user?.mood) {
-        setMyMood(data.user.mood);
+
+      if (!response.ok) {
+        throw new Error(`Partner status request failed with ${response.status}`);
       }
+
+      const data = await response.json();
+
+      setPartner(data.partner || null);
+      setMyMood(data.user?.mood ?? null);
     } catch (err) {
-      console.error("Failed to fetch partner status:", err);
+      console.warn("Partner status unavailable:", err);
+      setPartner(null);
+      setMyMood(null);
     } finally {
       setIsLoading(false);
     }
@@ -65,7 +87,7 @@ export const PartnerProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const linkPartner = async (partnerEmail: string) => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/partner/link`, {
+      const response = await fetch(getApiUrl('/api/partner/link'), {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -87,7 +109,7 @@ export const PartnerProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const unlinkPartner = async () => {
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/partner/unlink`, {
+      const response = await fetch(getApiUrl('/api/partner/unlink'), {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -104,7 +126,7 @@ export const PartnerProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const updateMood = async (mood: string) => {
     setMyMood(mood); // Optimistic update
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/api/partner/mood`, {
+      const response = await fetch(getApiUrl('/api/partner/mood'), {
         method: 'PUT',
         headers: { 
           'Content-Type': 'application/json',
