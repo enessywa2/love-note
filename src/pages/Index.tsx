@@ -68,6 +68,21 @@ function LoverFrame() {
   const [tempImage, setTempImage] = useState<string | null>(null);
   const [isCropperOpen, setIsCropperOpen] = useState(false);
 
+  const clearTempImage = useCallback(() => {
+    if (tempImage?.startsWith("blob:")) {
+      URL.revokeObjectURL(tempImage);
+    }
+    setTempImage(null);
+  }, [tempImage]);
+
+  useEffect(() => {
+    return () => {
+      if (tempImage?.startsWith("blob:")) {
+        URL.revokeObjectURL(tempImage);
+      }
+    };
+  }, [tempImage]);
+
   useEffect(() => {
     if (!user) return;
     const fetchPhoto = async () => {
@@ -88,23 +103,21 @@ function LoverFrame() {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file && user) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        setTempImage(reader.result as string);
-        setIsCropperOpen(true);
-      };
-      reader.readAsDataURL(file);
+      const previewUrl = URL.createObjectURL(file);
+      setTempImage(previewUrl);
+      setIsCropperOpen(true);
     }
   };
 
   const handleCropComplete = async (croppedImage: string) => {
     if (!user) return;
     setIsCropperOpen(false);
-    
+    clearTempImage();
+
     try {
       toast.loading("Saving your favorite photo... ✨", { id: "upload-frame" });
       setImgSrc(croppedImage);
-      
+
       const { error } = await supabase.from('Photo').insert({
         userId: user.id,
         imageBase64: croppedImage,
@@ -118,6 +131,11 @@ function LoverFrame() {
       toast.error("Failed to save photo. 🖼️", { id: "upload-frame" });
     }
   };
+
+  const handleCropCancel = useCallback(() => {
+    setIsCropperOpen(false);
+    clearTempImage();
+  }, [clearTempImage]);
 
   return (
     <div className="flex justify-center my-8 animate-fade-up" style={{ animationDelay: "200ms" }}>
@@ -150,7 +168,7 @@ function LoverFrame() {
           image={tempImage}
           open={isCropperOpen}
           onCropComplete={handleCropComplete}
-          onCancel={() => setIsCropperOpen(false)}
+          onCancel={handleCropCancel}
         />
       )}
     </div>

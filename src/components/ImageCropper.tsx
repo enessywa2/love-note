@@ -15,6 +15,7 @@ export default function ImageCropper({ image, onCropComplete, onCancel, open }: 
   const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
 
   const onCropChange = (crop: Point) => {
     setCrop(crop);
@@ -44,8 +45,13 @@ export default function ImageCropper({ image, onCropComplete, onCancel, open }: 
 
     if (!ctx) return "";
 
-    canvas.width = pixelCrop.width;
-    canvas.height = pixelCrop.height;
+    const maxDimension = 1000;
+    const scale = Math.min(1, maxDimension / Math.max(pixelCrop.width, pixelCrop.height));
+    const outputWidth = Math.max(1, Math.round(pixelCrop.width * scale));
+    const outputHeight = Math.max(1, Math.round(pixelCrop.height * scale));
+
+    canvas.width = outputWidth;
+    canvas.height = outputHeight;
 
     ctx.drawImage(
       image,
@@ -55,17 +61,22 @@ export default function ImageCropper({ image, onCropComplete, onCancel, open }: 
       pixelCrop.height,
       0,
       0,
-      pixelCrop.width,
-      pixelCrop.height
+      outputWidth,
+      outputHeight
     );
 
-    return canvas.toDataURL("image/jpeg", 0.9);
+    return canvas.toDataURL("image/jpeg", 0.8);
   };
 
   const handleSave = async () => {
-    if (croppedAreaPixels) {
+    if (!croppedAreaPixels) return;
+
+    setIsSaving(true);
+    try {
       const croppedImage = await getCroppedImg(image, croppedAreaPixels);
       onCropComplete(croppedImage);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -108,8 +119,8 @@ export default function ImageCropper({ image, onCropComplete, onCancel, open }: 
             <Button variant="outline" onClick={onCancel} className="flex-1 rounded-xl">
               Cancel
             </Button>
-            <Button onClick={handleSave} className="flex-1 rounded-xl bg-primary shadow-glow">
-              Apply Crop ✨
+            <Button onClick={handleSave} disabled={isSaving} className="flex-1 rounded-xl bg-primary shadow-glow">
+              {isSaving ? "Saving..." : "Apply Crop ✨"}
             </Button>
           </DialogFooter>
         </div>
